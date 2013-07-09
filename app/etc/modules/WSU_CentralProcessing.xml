@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Wsu_Centralprocessing>
+      <active>true</active>
+      <codePool>local</codePool>
+		<depends>
+			<Mage_Paygate/>
+			<Mage_Checkout/>
+			<Mage_Sales/>
+		</depends>
+    </Wsu_Centralprocessing>
+  </modules>
+</config>
