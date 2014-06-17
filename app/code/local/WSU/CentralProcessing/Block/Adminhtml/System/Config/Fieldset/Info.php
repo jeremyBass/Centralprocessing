@@ -3,7 +3,7 @@
  * @category   Cybersource
  * @package    Wsu_CentralProcessing
  */
-class Wsu_CentralProcessing_Block_System_Config_Info extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface {
+class Wsu_CentralProcessing_Block_Adminhtml_System_Config_Info extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface {
 
     /**
      * Render fieldset html
