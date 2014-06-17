@@ -169,20 +169,56 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	}
 
     public function failureAction() {
-		$order         = $this->getOrder();
-		if ( !$order->getId() ) {
+		
+		if($this->getConfigData('clear_cart_oncancel')){
+			//we are going to wipe the cart
+			$order         = $this->getOrder();
+			if ( !$order->getId() ) {
+				$this->_redirect('checkout/cart');
+				return false;
+			}
+	
+			$order->cancel();
+			$order->addStatusToHistory(
+				$order->getStatus(),
+				$this->__('Payment failed.')
+			);
+			$order->save();
+			
+			$this->_getCheckout()->addError($this->__('Payment failed.'));
 			$this->_redirect('checkout/cart');
-			return false;
+		}else{
+			//we are going to try to rebuild the cart for the user
+			$lastQuoteId = $this->getOnepage()->getCheckout()->getLastQuoteId();
+			$lastOrderId = $this->getOnepage()->getCheckout()->getLastOrderId();
+		
+		
+			if ($lastQuoteId && $lastOrderId) {
+				$orderModel = Mage::getModel('sales/order')->load($lastOrderId);
+				if($orderModel->canCancel()) {
+					
+					$quote = Mage::getModel('sales/quote')->load($lastQuoteId);
+					$quote->setIsActive(true)->save();
+					
+					$orderModel->cancel();
+					$orderModel->setStatus('canceled');
+					$orderModel->save();
+		
+					Mage::getSingleton('core/session')->setFailureMsg('order_failed');
+					Mage::getSingleton('checkout/session')->setFirstTimeChk('0');
+					$this->_redirect('checkout/cart');
+					return;
+				}
+			}
+			if (!$lastQuoteId || !$lastOrderId) {
+				$this->_redirect('checkout/cart');
+				return;
+			}
+		
+			$this->loadLayout();
+			$this->renderLayout();
 		}
+	
 
-        $order->cancel();
-        $order->addStatusToHistory(
-			$order->getStatus(),
-			$this->__('Payment failed.')
-		);
-        $order->save();
-
-		$this->_getCheckout()->addError($this->__('Payment failed.'));
-		$this->_redirect('checkout/cart');
     }
 }

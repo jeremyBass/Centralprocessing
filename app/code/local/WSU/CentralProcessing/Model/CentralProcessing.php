@@ -4,8 +4,6 @@
  * @package    Wsu_CentralProcessing
  */
 class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_Method_Abstract {
-    const PAYMENT_LIVE_URL       = 'https://centralprocessing.cybersource.com/pay';
-    const PAYMENT_TEST_URL       = 'https://testcentralprocessing.cybersource.com/pay';
 
     protected $_code 			= 'centralprocessing';
     protected $_formBlockType 	= 'centralprocessing/form';
@@ -56,8 +54,8 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
     }
 
 	public function getIssuerUrls() {
-		return array("live" => self::PAYMENT_LIVE_URL,
-					 "test" => self::PAYMENT_TEST_URL);
+		return array("live" => $this->getConfigData('live_hop_url'),
+					 "test" => $this->getConfigData('test_hop_url'));
 
 	}
 
