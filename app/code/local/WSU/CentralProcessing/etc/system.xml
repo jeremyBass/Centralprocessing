@@ -244,7 +244,6 @@
                             <show_in_store>1</show_in_store>
 							<depends>
 								<active>1</active>
-								<use_cancelurl>1</use_cancelurl>
 							</depends>
                         </clear_cart_oncancel>
 					
