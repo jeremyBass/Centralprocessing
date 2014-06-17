@@ -12,7 +12,7 @@
                 <centralprocessing module="centralprocessing">
                     <label>CyberSource (Secure Acceptance Web/Mobile)</label>
                     <frontend_type>text</frontend_type>
-                    <sort_order>26</sort_order>
+                    <sort_order>0</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
@@ -41,6 +41,14 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</title>
+						<checkout_info translate="label comment">
+							<label>The message with the payment option</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</checkout_info>
                         <access_key translate="label">
 							<label>Access Key</label>
 							<frontend_type>text</frontend_type>

@@ -32,4 +32,10 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
 		$hashSign = base64_encode(hash_hmac('sha256', $data, $secretKey, true));
 		return $hashSign;
 	}
+	
+	public function getInfo(){
+		$message = $this->getConfig('checkout_info');
+		return $this->__($message);
+	}
+
 }
