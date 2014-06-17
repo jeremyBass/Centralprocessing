@@ -40,6 +40,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</title>
 						<checkout_info translate="label comment">
 							<label>The message with the payment option</label>
@@ -48,6 +51,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</checkout_info>
                         <access_key translate="label">
 							<label>Access Key</label>
@@ -56,6 +62,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</access_key>
                         <profile_id translate="label">
 							<label>Profile ID</label>
@@ -64,6 +73,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</profile_id>
 						<secret_key translate="label">
 							<label>Secret Key</label>
@@ -72,6 +84,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</secret_key>
 						<order_status translate="label">
                             <label>New Order Status</label>
@@ -81,6 +96,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
                         </order_status>
                         <mode translate="label">
 							<label>Mode</label>
@@ -90,6 +108,9 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
 						</mode>
                         <debug_flag translate="label">
                             <label>Debug</label>
@@ -99,6 +120,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
                         </debug_flag>
                         <allowspecific translate="label">
                             <label>Payment from applicable countries</label>
@@ -108,6 +132,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
                         </allowspecific>
                         <specificcountry translate="label">
                             <label>Payment from Specific countries</label>
@@ -117,6 +144,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
                         </specificcountry>
 						<sort_order translate="label">
                             <label>Sort Order</label>
@@ -125,6 +155,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+							<depends>
+								<active>1</active>
+							</depends>
                         </sort_order>
                     </fields>
                 </centralprocessing>
