@@ -5,7 +5,6 @@
  */
 class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_Method_Abstract {
 
-
     protected $_code 			= 'centralprocessing';
     protected $_formBlockType 	= 'centralprocessing/form';
     protected $_infoBlockType 	= 'centralprocessing/info';
