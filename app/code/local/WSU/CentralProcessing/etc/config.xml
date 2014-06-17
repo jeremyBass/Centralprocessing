@@ -99,7 +99,7 @@
                 <active>0</active>
 				<enable_log>1</enable_log>
                	<model>centralprocessing/centralprocessing</model>
-               	<title>CyberSource Secure Acceptance WM</title>
+               	<title>Credit Card</title>
                 <mode>0</mode>
 				<order_status>pending</order_status>
                 <debug_flag>1</debug_flag>
