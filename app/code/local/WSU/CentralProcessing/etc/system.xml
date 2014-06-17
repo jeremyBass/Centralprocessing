@@ -247,18 +247,7 @@
 								<use_cancelurl>1</use_cancelurl>
 							</depends>
                         </clear_cart_oncancel>
-	
-						<postbackurl  translate="label">
-                            <label>Post Back Url </label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>100</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-							<depends>
-								<active>1</active>
-							</depends>
-                        </postbackurl>						
+					
                     </fields>
                 </centralprocessing>
             </groups>
