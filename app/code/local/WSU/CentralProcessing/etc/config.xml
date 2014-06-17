@@ -75,12 +75,6 @@
                             <children>
                                 <config>
                                     <children>
-                                        <cactimediainfo>
-											<title>Cybersource - All</title>
-										</cactimediainfo>
-										<paymentinfo>
-											<title>CyberSource Secure Acceptance WM Info</title>
-										</paymentinfo>
 										<centralprocessing>
 											<title>CyberSource Secure Acceptance WM Area</title>
 										</centralprocessing>
