@@ -53,20 +53,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
         return $this;
     }
 
-	public function getIssuerUrls() {
-		return array("live" => $this->getConfigData('live_hop_url'),
-					 "test" => $this->getConfigData('test_hop_url'));
 
-	}
-
-	public function getCentralProcessingUrl() {
-		$setIssuerUrls 	= $this->getIssuerUrls();
-		if($this->getConfigData('mode')){
-			return $setIssuerUrls["live"];
-		}else{
-			return $setIssuerUrls["test"];
-		}
-	}
 
     public function getOrderPlaceRedirectUrl() {
           return Mage::getUrl('centralprocessing/process/redirect');
@@ -225,7 +212,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
             $resource       = Mage::getSingleton('core/resource');
             $connection 	= $resource->getConnection('core_write');
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
-    	    $connection->query($sql, array(date('Y-m-d H:i:s'), $this->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
+    	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
         }
 
 		return $formFields;

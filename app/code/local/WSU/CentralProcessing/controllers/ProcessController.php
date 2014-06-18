@@ -169,7 +169,6 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	}
 
     public function failureAction() {
-		
 		if($this->getConfigData('clear_cart_oncancel')){
 			//we are going to wipe the cart
 			$order         = $this->getOrder();
