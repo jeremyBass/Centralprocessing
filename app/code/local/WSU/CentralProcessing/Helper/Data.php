@@ -46,7 +46,7 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	public function getCentralProcessingUrl() {
 		$setIssuerUrls 	= $this->getIssuerUrls();
-		if($this->getConfigData('mode')){
+		if($this->getConfig('mode')){
 			return $setIssuerUrls["live"];
 		}else{
 			return $setIssuerUrls["test"];
