@@ -54,32 +54,16 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	}
 
 	public function getPostbackUrl() {
-		return $this->getIpnUrl();//use_cancelurl cancelurl   use_return_url return_url
+		return $this->getIpnUrl();
 	}
 
 	public function getReturnURL() {
-		return Mage::getUrl( ( $this->getConfig('use_return_url') ? $this->getConfig('return_url') : 'checkout/cart' ), array('_secure' => true)); 
+		return Mage::getUrl( ( $this->getConfig('use_return_url') ? $this->getConfig('return_url') : 'centralprocessing/process/router' ), array('_secure' => true) ); 
 	}
 
 	public function getCancelUrl() {
-		return Mage::getUrl( ( $this->getConfig('use_cancel_url') ? $this->getConfig('cancel_url') : 'checkout/cart' ), array('_secure' => true));
+		return Mage::getUrl( ( $this->getConfig('use_cancel_url') ? $this->getConfig('cancel_url') : 'centralprocessing/process/cancel' ), array('_secure' => true) );
 	}
-
-    public function getOrderPlaceRedirectUrl() {
-          return Mage::getUrl('centralprocessing/process/redirect');
-    }
-
-    protected function getSuccessUrl() {
-		return Mage::getUrl('centralprocessing/process/success', array('_secure' => true));
-	}
-
-	protected function getFailureUrl() {
-        return Mage::getUrl('centralprocessing/process/failure', array('_secure' => true));
-    }
-
-    protected function getCancelUrl() {
-        return Mage::getUrl('centralprocessing/process/cancel', array('_secure' => true));
-    }
 
     protected function getIpnUrl() {
         return Mage::getUrl('centralprocessing/process/ipn', array('_secure' => true));
