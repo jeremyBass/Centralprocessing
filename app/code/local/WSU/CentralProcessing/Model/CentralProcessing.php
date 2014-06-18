@@ -89,23 +89,23 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 
 
     public function getOrderPlaceRedirectUrl() {
-          return Mage::getUrl('centralprocessing/process/redirect');
+          return Mage::getUrl('processing/process/redirect');
     }
 
     protected function getSuccessUrl() {
-		return Mage::getUrl('centralprocessing/process/success', array('_secure' => true));
+		return Mage::getUrl('processing/process/success', array('_secure' => true));
 	}
 
 	protected function getFailureUrl() {
-        return Mage::getUrl('centralprocessing/process/failure', array('_secure' => true));
+        return Mage::getUrl('processing/process/failure', array('_secure' => true));
     }
 
     protected function getCancelUrl() {
-        return Mage::getUrl('centralprocessing/process/cancel', array('_secure' => true));
+        return Mage::getUrl('processing/process/cancel', array('_secure' => true));
     }
 
     protected function getIpnUrl() {
-        return Mage::getUrl('centralprocessing/process/ipn', array('_secure' => true));
+        return Mage::getUrl('processing/process/ipn', array('_secure' => true));
     }
 
 	public function getCustomer() {
