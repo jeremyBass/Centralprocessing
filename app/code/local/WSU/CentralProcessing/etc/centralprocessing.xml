@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gateways>
+<!-- An example of custom config nodes
+    <indexers>
+        <config>
+            <class>wsu_taxonomy/indexer_config</class>
+        </config>
+    </indexers>
+    <actions>
+        <clear_all>
+            <title module="wsu_taxonomy">Clear Magento Cache</title>
+            <text module="core">Flush Magento Cache</text>
+            <acl>system/cache</acl>
+            <action>adminhtml/wsu_taxonomy/clearCache</action>
+        </clear_all>
+    </actions>
+-->
+
+		<fieldmap>
+			<!-- BASIC ATTRIBUTES -->
+			<ApplicationIDPrimary value="Default"/>
+			<ApplicationIDSecondary field="sku"/>
+			<ApplicationStateData value="simple"/>
+			<ApprovalCode field="price"/>
+			<!-- STATE -->
+			<Approved_Transactions_Count helper="wsu_sampleimport/import_state::resolveStatus"/>
+			<!-- INVENTORY -->
+			<AuthorizationAmount field="stock_quantity"/>
+			<AuthorizationAttemptLimit field="@attributes/active"/>
+			<AuthorizationType value="1"/>
+			
+			
+			<BeginDateTime field="feild" defaultvalue=""/>
+			<EndDateTime field="feild" defaultvalue=""/>
+			
+			<!-- CONTENT -->
+			<BillingAddress field="feild" defaultvalue=""/>
+			<BillingCity field="feild" defaultvalue=""/>
+			<BillingZipCode field="feild" defaultvalue=""/>
+			<BillingCountry field="feild" defaultvalue=""/>
+			<BillingState field="feild" defaultvalue=""/>
+			
+			<CaptureAmount field="feild" defaultvalue=""/>
+			<Check_CPM_Return_Code field="feild" defaultvalue=""/>
+			<Check_CPM_Return_Message field="feild" defaultvalue=""/>
+			
+			<CPMReturnCode field="feild" defaultvalue=""/>
+			<CPMReturnMessage field="feild" defaultvalue=""/>
+			<CPMSequenceNum field="feild" defaultvalue=""/>
+			
+			<CreditCardType field="feild" defaultvalue=""/>
+			<EmailAddressDeptContact field="feild" defaultvalue=""/>
+			<MaskedCreditCardNumber field="feild" defaultvalue=""/>
+			<MerchantID field="feild" defaultvalue=""/>
+			<OneStepTranType field="feild" defaultvalue=""/>
+			
+			<PostbackURL helper="wsu_centralprocessing/data::getPostbackUrl"/>
+			<ReturnURL helper="wsu_centralprocessing/data::getReturnURL"/>
+			<CancelUrl helper="wsu_centralprocessing/data::getCancelUrl"/> 
+			
+			<ResponseReturnCode field="feild" defaultvalue=""/>
+			<ResponseReturnMessage field="feild" defaultvalue=""/>
+			
+			<RequestGUID field="feild" defaultvalue=""/>
+			
+			<ReturnCode field="feild" defaultvalue=""/>
+			<ReturnMessage field="feild" defaultvalue=""/>
+			
+			
+			<StyleSheetKey field="feild" defaultvalue=""/>
+			
+			<WebPageURLAndGUID field="feild" defaultvalue=""/>
+
+		</fieldmap>
+</gateways>
+
+
+
+
+
+
+
+ 
+
+
+
