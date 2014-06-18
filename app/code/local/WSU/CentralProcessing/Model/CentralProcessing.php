@@ -10,7 +10,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
     protected $_infoBlockType 	= 'centralprocessing/info';
 
 	protected $_isGateway               = false;
-    protected $_canAuthorize            = false;
+    protected $_canAuthorize            = true;//throws an error when false?  doesn't seem like this is anything but a trap
     protected $_canCapture              = true;
     protected $_canCapturePartial       = false;
     protected $_canRefund               = false;
