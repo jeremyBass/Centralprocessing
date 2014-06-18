@@ -13,7 +13,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
             ->setName('centralprocessing_payment_checkout')
             ->setMethod('POST')
             ->setUseContainer(true);
-
+/*
 		foreach ($standard->getFormFields() as $field => $value) {
             $form->addField($field, 'hidden', array('name'=>$field, 'value'=>$value));
         }
@@ -31,8 +31,8 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
             // live mode
             $org_id = 'k8vif92e';
         }   
-
-        $html = '<html><body>';
+*/
+        $html = '<h1> There would be a form that would alot post</h1>';
 /*
         $html .= '<p style="background:url(https://h.online-metrix.net/fp/clear.png?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '&m=1)"></p>';
         $html .= '<img style="display:none;" src="https://h.online-metrix.net/fp/clear.png?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '&m=2" alt="">';
@@ -44,7 +44,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 /*		// die($html);
         $html.= '<script type="text/javascript">document.getElementById("centralprocessing_payment_checkout").submit();</script>';
 		*/
-        $html.= '</body></html>';
+        $html.= '';
 
 		return $html;
     }
