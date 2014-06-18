@@ -19,6 +19,39 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = false;
 
+
+    const CONFIG_CACHE_ID = 'wsu_centralprocessing_config';
+    protected $_config;
+    protected $_indexers = array( );
+    protected $_scopes = array( );
+    protected function _construct( ) {
+        $this->_initConfig();
+        $this->_loadIndexers();
+    }
+	/* you may use a custom config file.  This would be
+	the only extention file that would be remotally ok to 
+	write to if there was cause*/
+    protected function _initConfig( ) {
+        $cacheId = self::CONFIG_CACHE_ID;
+        $data    = Mage::app()->loadCache( $cacheId );
+        if ( false !== $data ) {
+            $data = unserialize( $data );
+        } else {
+            $xml  = Mage::getConfig()->loadModulesConfiguration( 'centralprocessing.xml' )->getNode();
+            $data = $xml->asArray();
+            Mage::app()->saveCache( serialize( $data ), $cacheId );
+        }
+        $this->_config = $data;
+        return $this;
+    }
+    /* you can put usfull functions here */
+
+
+
+
+
+
+
 	//protected $_allowCurrencyCode = array('EUR', 'USD');
 
 	public function validate() {
