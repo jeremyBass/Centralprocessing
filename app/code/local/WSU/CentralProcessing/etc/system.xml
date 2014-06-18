@@ -209,7 +209,7 @@
 							</depends>
                         </return_url>
 
-                        <use_cancelurl translate="label">
+                        <use_cancel_url translate="label">
                             <label>Set a custom cancel url</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -220,9 +220,9 @@
 							<depends>
 								<active>1</active>
 							</depends>
-                        </use_cancelurl>
+                        </use_cancel_url>
 
-						<cancelurl translate="label">
+						<cancel_url translate="label">
                             <label>Cancel Url</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>121</sort_order>
@@ -231,9 +231,9 @@
                             <show_in_store>0</show_in_store>
 							<depends>
 								<active>1</active>
-								<use_cancelurl>1</use_cancelurl>
+								<use_cancel_url>1</use_cancel_url>
 							</depends>
-                        </cancelurl>
+                        </cancel_url>
 						<clear_cart_oncancel   translate="label">
                             <label>Clear the cart on cancel</label>
                             <frontend_type>select</frontend_type>

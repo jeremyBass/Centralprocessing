@@ -10,7 +10,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
     protected $_infoBlockType 	= 'centralprocessing/info';
 
 	protected $_isGateway               = false;
-    protected $_canAuthorize            = false;
+    protected $_canAuthorize            = true;//throws an error when false?  doesn't seem like this is anything but a trap
     protected $_canCapture              = true;
     protected $_canCapturePartial       = false;
     protected $_canRefund               = false;
@@ -18,6 +18,39 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
     protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
     protected $_canUseForMultishipping  = false;
+
+
+    const CONFIG_CACHE_ID = 'wsu_centralprocessing_config';
+    protected $_config;
+    protected $_indexers = array( );
+    protected $_scopes = array( );
+    protected function _construct( ) {
+        $this->_initConfig();
+        $this->_loadIndexers();
+    }
+	/* you may use a custom config file.  This would be
+	the only extention file that would be remotally ok to 
+	write to if there was cause*/
+    protected function _initConfig( ) {
+        $cacheId = self::CONFIG_CACHE_ID;
+        $data    = Mage::app()->loadCache( $cacheId );
+        if ( false !== $data ) {
+            $data = unserialize( $data );
+        } else {
+            $xml  = Mage::getConfig()->loadModulesConfiguration( 'centralprocessing.xml' )->getNode();
+            $data = $xml->asArray();
+            Mage::app()->saveCache( serialize( $data ), $cacheId );
+        }
+        $this->_config = $data;
+        return $this;
+    }
+    /* you can put usfull functions here */
+
+
+
+
+
+
 
 	//protected $_allowCurrencyCode = array('EUR', 'USD');
 
@@ -53,39 +86,26 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
         return $this;
     }
 
-	public function getIssuerUrls() {
-		return array("live" => $this->getConfigData('live_hop_url'),
-					 "test" => $this->getConfigData('test_hop_url'));
 
-	}
-
-	public function getCentralProcessingUrl() {
-		$setIssuerUrls 	= $this->getIssuerUrls();
-		if($this->getConfigData('mode')){
-			return $setIssuerUrls["live"];
-		}else{
-			return $setIssuerUrls["test"];
-		}
-	}
 
     public function getOrderPlaceRedirectUrl() {
-          return Mage::getUrl('centralprocessing/process/redirect');
+          return Mage::getUrl('processing/process/redirect');
     }
 
     protected function getSuccessUrl() {
-		return Mage::getUrl('centralprocessing/process/success', array('_secure' => true));
+		return Mage::getUrl('processing/process/success', array('_secure' => true));
 	}
 
 	protected function getFailureUrl() {
-        return Mage::getUrl('centralprocessing/process/failure', array('_secure' => true));
+        return Mage::getUrl('processing/process/failure', array('_secure' => true));
     }
 
     protected function getCancelUrl() {
-        return Mage::getUrl('centralprocessing/process/cancel', array('_secure' => true));
+        return Mage::getUrl('processing/process/cancel', array('_secure' => true));
     }
 
     protected function getIpnUrl() {
-        return Mage::getUrl('centralprocessing/process/ipn', array('_secure' => true));
+        return Mage::getUrl('processing/process/ipn', array('_secure' => true));
     }
 
 	public function getCustomer() {
@@ -152,7 +172,12 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$payment		= $this->getQuote()->getPayment();
 		$order			= $this->getOrder();
 		$formFields	    = array();
+		
 
+		
+		
+		
+		
 		//prepare variables for hidden form fields
 		$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
 		$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
@@ -219,13 +244,26 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 
 		$formFields['signature']					= $this->getHashSign($formFields);
 
+
+		$state = '{
+			"oi":"'.$order->getId().'",
+			"roi":"'.$order->getRealOrderId().'",
+			"icount":"'.count($items).'",
+			"icat":"'.implode(',', array_unique($categories)).'",
+			"items":"'.implode(',', array_unique($products)).'"
+		}';
+
+
+		$formFields['state'] = json_encode(json_decode($state));
+
+
 		//Log request info
         if($this->getConfigData('debug_flag')){
             Mage::helper('centralprocessing')->log($formFields);//for debug purpose
             $resource       = Mage::getSingleton('core/resource');
             $connection 	= $resource->getConnection('core_write');
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
-    	    $connection->query($sql, array(date('Y-m-d H:i:s'), $this->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
+    	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
         }
 
 		return $formFields;

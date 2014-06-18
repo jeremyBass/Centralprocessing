@@ -3,7 +3,7 @@
  * @category   Cybersource
  * @package    Wsu_CentralProcessing
  */
-class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front_Action {
+class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_Action {
     protected $_order;
 
     protected function _getCheckout() {
@@ -33,6 +33,7 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	public function redirectAction() {
 		$session 	= $this->_getCheckout();
 		$order 		= $this->getOrder();
+		var_dump($order); die();
 		if (!$order->getId()) {
 			$this->norouteAction();
 			return;
@@ -43,11 +44,10 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 			$this->__('Customer was redirected to Cybersource.')
 		);
 		$order->save();
-
-		$this->getResponse()
-			->setBody(
-				$this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order)->toHtml()
-			);
+		$redict_page = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order)->toHtml();
+		$redict_page = "TEST";
+		$this->getResponse()->setBody($redict_page);
+		exit;
     }
 
     public function ipnAction() {
@@ -150,6 +150,12 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		}
     }
 
+
+    public function routerAction() {
+		
+	}
+
+
     public function cancelAction() {
 		$order         = $this->getOrder();
 		if ( !$order->getId() ) {
@@ -169,7 +175,6 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	}
 
     public function failureAction() {
-		
 		if($this->getConfigData('clear_cart_oncancel')){
 			//we are going to wipe the cart
 			$order         = $this->getOrder();
@@ -221,4 +226,21 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	
 
     }
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

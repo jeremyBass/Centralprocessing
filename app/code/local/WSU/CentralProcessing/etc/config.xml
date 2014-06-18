@@ -54,7 +54,7 @@
                 <use>standard</use>
                 <args>
                     <module>Wsu_CentralProcessing</module>
-                    <frontName>centralprocessing</frontName>
+                    <frontName>processing</frontName>
                 </args>
             </centralprocessing>
         </routers>
