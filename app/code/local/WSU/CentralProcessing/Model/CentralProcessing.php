@@ -221,7 +221,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		}';
 
 
-		$formFields['state'] = $state;
+		$formFields['state'] = json_encode(json_decode($state));
 
 
 		//Log request info
