@@ -150,6 +150,12 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		}
     }
 
+
+    public function routerAction() {
+		
+	}
+
+
     public function cancelAction() {
 		$order         = $this->getOrder();
 		if ( !$order->getId() ) {
@@ -220,4 +226,21 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	
 
     }
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

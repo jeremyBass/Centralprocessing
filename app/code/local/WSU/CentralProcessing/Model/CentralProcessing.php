@@ -139,7 +139,12 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$payment		= $this->getQuote()->getPayment();
 		$order			= $this->getOrder();
 		$formFields	    = array();
+		
 
+		
+		
+		
+		
 		//prepare variables for hidden form fields
 		$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
 		$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
@@ -205,6 +210,19 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['merchant_defined_data25']				= $order->getShippingAddress()->getCountry(); //Product Shipping Country Name
 
 		$formFields['signature']					= $this->getHashSign($formFields);
+
+
+		$state = '{
+			"oi":"'.$order->getId().'",
+			"roi":"'.$order->getRealOrderId().'",
+			"icount":"'.count($items).'",
+			"icat":"'.implode(',', array_unique($categories)).'",
+			"items":"'.implode(',', array_unique($products)).'"
+		}';
+
+
+		$formFields['state'] = $state;
+
 
 		//Log request info
         if($this->getConfigData('debug_flag')){
