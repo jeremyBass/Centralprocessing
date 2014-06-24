@@ -3,7 +3,7 @@
  * @category   Cybersource
  * @package    Wsu_CentralProcessing
  */
-class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_Action {
+class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front_Action {
     protected $_order;
 
     protected function _getCheckout() {

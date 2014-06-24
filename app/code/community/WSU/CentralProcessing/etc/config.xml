@@ -58,13 +58,13 @@
                 </args>
             </centralprocessing>
         </routers>
-        <layout>
+        <!--<layout>
             <updates>
                 <centralprocessing>
                     <file>centralprocessing.xml</file>
                 </centralprocessing>
             </updates>
-        </layout>
+        </layout>-->
     </frontend>
     <adminhtml>
         <acl>
