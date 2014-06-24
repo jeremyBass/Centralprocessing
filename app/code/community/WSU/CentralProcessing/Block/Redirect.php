@@ -31,7 +31,7 @@ $ch = curl_init();
 
 //set the url, number of POST vars, POST data
 curl_setopt($ch,CURLOPT_URL, $helper->getCentralProcessingUrl());
-curl_setopt($ch,CURLOPT_POST, count($fields));
+curl_setopt($ch,CURLOPT_POST, count($formFields));
 curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
 
 //execute post
