@@ -174,10 +174,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields	    = array();
 		
 
-		
-		
-		
-		
+
 		//prepare variables for hidden form fields
 		$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
 		$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
@@ -208,7 +205,6 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['bill_to_surname']				= $billingAddress->getLastname();
 		$formFields['bill_to_phone']				= $billingAddress->getTelephone();
 		$formFields['customer_ip_address']			= Mage::helper('core/http')->getRemoteAddr();
-
 
 		$items = $order->getAllItems();
 		$categories = array();
@@ -244,7 +240,6 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 
 		$formFields['signature']					= $this->getHashSign($formFields);
 
-
 		$state = '{
 			"oi":"'.$order->getId().'",
 			"roi":"'.$order->getRealOrderId().'",
@@ -257,14 +252,14 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['state'] = json_encode(json_decode($state));
 
 
-		//Log request info
+		/*//Log request info
         if($this->getConfigData('debug_flag')){
             Mage::helper('centralprocessing')->log($formFields);//for debug purpose
             $resource       = Mage::getSingleton('core/resource');
             $connection 	= $resource->getConnection('core_write');
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
     	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
-        }
+        }*/
 
 		return $formFields;
 	}

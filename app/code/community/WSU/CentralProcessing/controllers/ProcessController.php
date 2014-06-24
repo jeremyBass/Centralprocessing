@@ -33,7 +33,7 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 	public function redirectAction() {
 		$session 	= $this->_getCheckout();
 		$order 		= $this->getOrder();
-		var_dump($order); die();
+		//var_dump($order); die();
 		if (!$order->getId()) {
 			$this->norouteAction();
 			return;
@@ -43,11 +43,15 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 			$order->getStatus(),
 			$this->__('Customer was redirected to Cybersource.')
 		);
+		
 		$order->save();
-		$redict_page = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order)->toHtml();
-		$redict_page = "TEST";
+		$block = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order);
+
+		//$this->getResponse()->setBody($block->toHtml());
+		$redict_page = $block->toHtml();
+		//var_dump($redict_page);die();
 		$this->getResponse()->setBody($redict_page);
-		exit;
+		//exit;
     }
 
     public function ipnAction() {
