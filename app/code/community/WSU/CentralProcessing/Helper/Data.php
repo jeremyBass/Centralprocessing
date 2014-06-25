@@ -21,7 +21,13 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
         Mage::log($separator, null, 'centralprocessing.log', true);
         Mage::log($data, null, 'centralprocessing.log', true);
     }
-
+	public function removeResponseXMLNS($input) { 
+		// Remove XML response namespaces one by one 
+		$input = str_replace(' xmlns="webservice.it.wsu.edu"','',$input); 
+		$input = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','',$input); 
+		return str_replace(' xmlns:xsd="http://www.w3.org/2001/XMLSchema"','',$input); 
+	} 
+	
 	public function getHashSign($params, $signedField = 'signed_field_names') {
 		$signedFieldNames = explode(",", $params[$signedField]);
         foreach ($signedFieldNames as &$field) {
