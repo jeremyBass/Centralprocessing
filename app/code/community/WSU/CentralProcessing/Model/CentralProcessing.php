@@ -273,7 +273,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['Approved_Transactions_Count']	= '';
 		
 		$formFields['AuthorizationAmount']			= $this->getOrderAmount();
-		$formFields['AuthorizationAttemptLimit ']	= '';
+		$formFields['AuthorizationAttemptLimit']	= 3;
 		$formFields['AuthorizationType']			= $this->getConfigData('authorization_type');
 		
 		$formFields['BeginDateTime']				= '';
