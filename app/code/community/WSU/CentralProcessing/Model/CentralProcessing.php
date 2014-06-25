@@ -169,17 +169,35 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 	}
 
 	public function getFormFields() {
-		$payment		= $this->getQuote()->getPayment();
-		$order			= $this->getOrder();
-		$formFields	    = array();
+		$payment			= $this->getQuote()->getPayment();
+		$order				= $this->getOrder();
+		$billingAddress		= $order->getBillingAddress();
+		$items				= $order->getAllItems();
 		
+		$formFields			= array();
+		$categories			= array();
+		$products			= array();
+		$stores				= array();
+		
+		foreach($items as $_item){
+			$productId = $_item->getProductId();
+			$product	 = Mage::getModel('catalog/product')->load($productId);
+			$cats		= $product->getCategoryIds();
+			foreach ($cats as $category_id) {
+				$_cat = Mage::getModel('catalog/category')->load($category_id) ;
+				$categories[] = $_cat->getName();
+			}
+			$products[] = $_item->getSku();
+			$stores[] = $_item->getStoreId(); 
+		}
+
 
 		
-		
-		
-		
+
+
+
 		//prepare variables for hidden form fields
-		$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
+		/*$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
 		$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
 		$formFields['transaction_uuid']		 = Mage::helper('core')->uniqHash();
 		$formFields['signed_field_names']	 = 'access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency,bill_to_address_city,bill_to_address_country,bill_to_address_line1,bill_to_address_line2,bill_to_address_postal_code,bill_to_address_state,bill_to_company_name,bill_to_email,bill_to_forename,bill_to_surname,bill_to_phone,customer_ip_address';
@@ -194,7 +212,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['amount']				 = $this->getOrderAmount();
 		$formFields['currency']				 = $this->getOrderCurrency();
 
-		$billingAddress = $order->getBillingAddress();
+		
 		$formFields['bill_to_address_city']			 = $billingAddress->getCity();
 		$formFields['bill_to_address_country']		 = $billingAddress->getCountry();
 		$formFields['bill_to_address_line1']		 = $billingAddress->getStreet(1);
@@ -209,20 +227,6 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['bill_to_phone']				= $billingAddress->getTelephone();
 		$formFields['customer_ip_address']			= Mage::helper('core/http')->getRemoteAddr();
 
-
-		$items = $order->getAllItems();
-		$categories = array();
-		$products = array();
-		foreach($items as $_item){
-			$productId = $_item->getProductId();
-			$product	 = Mage::getModel('catalog/product')->load($productId);
-			$cats		= $product->getCategoryIds();
-			foreach ($cats as $category_id) {
-				$_cat = Mage::getModel('catalog/category')->load($category_id) ;
-				$categories[] = $_cat->getName();
-			}
-			$products[] = $_item->getName();
-		}
 
 		$formFields['merchant_defined_data1']				= '10'; //Number of Failed Authorizations Attempts
 		$formFields['merchant_defined_data2']				= '10'; //Number of orders to date since registering
@@ -242,30 +246,100 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['merchant_defined_data21']				= count($items); //Number of items sold in the order
 		$formFields['merchant_defined_data25']				= $order->getShippingAddress()->getCountry(); //Product Shipping Country Name
 
+
 		$formFields['signature']					= $this->getHashSign($formFields);
-
-
+*/
 		$state = '{
-			"oi":"'.$order->getId().'",
-			"roi":"'.$order->getRealOrderId().'",
+			"oid":"'.$order->getId().'",
+			"roid":"'.$order->getRealOrderId().'",
 			"icount":"'.count($items).'",
 			"icat":"'.implode(',', array_unique($categories)).'",
-			"items":"'.implode(',', array_unique($products)).'"
+			"isku":"'.implode(',', array_unique($products)).'",
+			"bEmail":"'. $this->getEmail() .'"
 		}';
+		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
+
+		$formFields['state']						= $encodedState;
+
+		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
+		$formFields['OneStepTranType']				= 'WEBBPART';
+		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
+		$formFields['ApplicationIDSecondary']		= '{'.json_encode($stores).'}';
+		
+		$formFields['ApprovalCode']					= '';
+		$formFields['Approved_Transactions_Count']	= '';
+		
+		$formFields['AuthorizationAmount']			= $this->getOrderAmount();
+		$formFields['AuthorizationAttemptLimit']	= 3;
+		$formFields['AuthorizationType']			= $this->getConfigData('authorization_type');
+		
+		$formFields['BeginDateTime']				= '';
+		$formFields['EndDateTime']					= '';
+		
+		$formFields['BillingAddress']				= $billingAddress->getStreet(1).'\r\n'.$billingAddress->getStreet(2);
+		$formFields['BillingCity']					= $billingAddress->getCity();
+		$formFields['BillingZipCode']				= $billingAddress->getPostcode();
+		$formFields['BillingCountry']				= $billingAddress->getCountry();
+		
+		$region = Mage::getModel('directory/region')->load($billingAddress->getRegionId());
+ 		$abbr = $region->getCode();
+		
+		$formFields['BillingState']					= $abbr;
+		
+		
+		$formFields['CaptureAmount']				= $this->getOrderAmount();
+		
+		$formFields['CPMReturnCode']				= '';
+		$formFields['CPMReturnMessage']				= '';
+		$formFields['CPMSequenceNum']				= '';
+		$formFields['CreditCardType']				= '';
+		$formFields['EmailAddressDeptContact']		= '';
+		$formFields['MaskedCreditCardNumber']		= '';
+		
+		
+		$formFields['profileSeqNum']				= '01';//$order->getRealOrderId();
+		
+		
+		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
+		$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
+		$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
+		
+		$formFields['StyleSheetKey']				= '';
+		$formFields['WebPageURLAndGUID']			= '';
+		
+		
+		$formFields['ApplicationStateData']			= $encodedState;
+
+/* 
 
 
-		$formFields['state'] = json_encode(json_decode($state));
+$formFields['ReturnCode']					= '';
+$formFields['ReturnMessage']				= '';
+$formFields['ResponseReturnCode']			= '';
+$formFields['ResponseReturnMessage']		= '';
+$formFields['RequestGUID']					= '';
+$formFields['Check_CPM_Return_Code']		= '';
+$formFields['Check_CPM_Return_Message']		= '';
 
 
-		//Log request info
+*/
+
+
+
+
+
+
+
+
+		/*//Log request info
         if($this->getConfigData('debug_flag')){
             Mage::helper('centralprocessing')->log($formFields);//for debug purpose
             $resource       = Mage::getSingleton('core/resource');
             $connection 	= $resource->getConnection('core_write');
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
     	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
-        }
-
+        }*/
+//var_dump($formFields);
 		return $formFields;
 	}
 }

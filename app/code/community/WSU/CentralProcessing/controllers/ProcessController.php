@@ -3,7 +3,7 @@
  * @category   Cybersource
  * @package    Wsu_CentralProcessing
  */
-class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_Action {
+class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front_Action {
     protected $_order;
 
     protected function _getCheckout() {
@@ -33,7 +33,7 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_A
 	public function redirectAction() {
 		$session 	= $this->_getCheckout();
 		$order 		= $this->getOrder();
-		var_dump($order); die();
+		//var_dump($order); die();
 		if (!$order->getId()) {
 			$this->norouteAction();
 			return;
@@ -43,11 +43,15 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_A
 			$order->getStatus(),
 			$this->__('Customer was redirected to Cybersource.')
 		);
+		
 		$order->save();
-		$redict_page = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order)->toHtml();
-		$redict_page = "TEST";
+		$block = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrder($order);
+
+		//$this->getResponse()->setBody($block->toHtml());
+		$redict_page = $block->toHtml();
+		//var_dump($redict_page);die();
 		$this->getResponse()->setBody($redict_page);
-		exit;
+		//exit;
     }
 
     public function ipnAction() {
@@ -152,6 +156,69 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Checkout_Controller_A
 
 
     public function routerAction() {
+		
+		
+		
+
+		$helper				= Mage::helper('centralprocessing');
+		$GUID=$_REQUEST['GUID'];
+		//url-ify the data for the POST
+		$fields_string="RequestGUID=".$GUID;
+		
+		
+		$url = trim($helper->getCentralProcessingUrl(),'/');
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
+		
+		
+		$wrapper = fopen('php://temp', 'r+');
+		
+		//open connection
+		$ch = curl_init($url);
+		
+		curl_setopt($ch, CURLOPT_VERBOSE, true);
+		curl_setopt($ch, CURLOPT_STDERR, $wrapper);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count(1));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		
+		//execute post
+		$result = curl_exec($ch);
+		if($result === false) {
+			echo 'Curl error: ' . curl_error($ch);
+		}
+		
+		
+		//close connection
+		curl_close($ch);
+		var_dump($url);
+		var_dump($fields_string);
+		
+
+		var_dump($result);
+		
+		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+		
+		$ResponseReturnCode = $nodes->ResponseReturnCode;
+		$ResponseGUID = $nodes->ResponseGUID;
+		$ApprovalCode = $nodes->ApprovalCode;
+		$CreditCardType = $nodes->CreditCardType;
+		$MaskedCreditCardNumber = $nodes->MaskedCreditCardNumber;
+		$ApplicationStateData = $nodes->ApplicationStateData;
+		
+		$state = json_decode($ApplicationStateData);
+		
+		
+		var_dump($ResponseReturnCode);
+		var_dump($ResponseGUID);
+		var_dump($ApprovalCode);
+		var_dump($CreditCardType);
+		var_dump($MaskedCreditCardNumber);
+		var_dump($ApplicationStateData);
+		var_dump($state);
+		die();
 		
 	}
 
