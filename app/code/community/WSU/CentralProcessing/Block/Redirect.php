@@ -21,29 +21,45 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 
 
-//url-ify the data for the POST
-$fields_string="";
-foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-rtrim($fields_string, '&');
+		//url-ify the data for the POST
+		$fields_string="";
+		
+		$fields_string .= ($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestwithAddress":"AuthRequestwithAddress")."&";
+		
+		
+		foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		rtrim($fields_string, '&');
+		
+		
+		$wrapper = fopen('php://temp', 'r+');
+		
+		//open connection
+		$ch = curl_init();
+		$url = $helper->getCentralProcessingUrl();
+		curl_setopt($ch, CURLOPT_VERBOSE, true);
+		curl_setopt($ch, CURLOPT_STDERR, $wrapper);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count($formFields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		
+		//execute post
+		$result = curl_exec($ch);
+		if($result === false) {
+			echo 'Curl error: ' . curl_error($ch);
+		}
+		
+		
+		//close connection
+		curl_close($ch);
+		var_dump($url);
+		var_dump($fields_string);
+		var_dump($result);die();
 
-//open connection
-$ch = curl_init();
 
-//set the url, number of POST vars, POST data
-curl_setopt($ch,CURLOPT_URL, $helper->getCentralProcessingUrl());
-curl_setopt($ch,CURLOPT_POST, count($formFields));
-curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-
-//execute post
-$result = curl_exec($ch);
-
-//close connection
-curl_close($ch);
-
-var_dump($result);
-
-
-
+		
 
 
 

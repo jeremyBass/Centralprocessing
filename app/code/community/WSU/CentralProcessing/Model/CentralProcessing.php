@@ -169,15 +169,15 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 	}
 
 	public function getFormFields() {
-		$payment		= $this->getQuote()->getPayment();
-		$order			= $this->getOrder();
-		$formFields	    = array();
-
-
-		$items = $order->getAllItems();
-		$categories = array();
-		$products = array();
-		$stores = array();
+		$payment			= $this->getQuote()->getPayment();
+		$order				= $this->getOrder();
+		$billingAddress		= $order->getBillingAddress();
+		$items				= $order->getAllItems();
+		
+		$formFields			= array();
+		$categories			= array();
+		$products			= array();
+		$stores				= array();
 		
 		foreach($items as $_item){
 			$productId = $_item->getProductId();
@@ -212,7 +212,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['amount']				 = $this->getOrderAmount();
 		$formFields['currency']				 = $this->getOrderCurrency();
 
-		$billingAddress = $order->getBillingAddress();
+		
 		$formFields['bill_to_address_city']			 = $billingAddress->getCity();
 		$formFields['bill_to_address_country']		 = $billingAddress->getCountry();
 		$formFields['bill_to_address_line1']		 = $billingAddress->getStreet(1);
@@ -259,19 +259,15 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 			"BillingCompany":"'. $this->getCompany() .'",
 			"BillingFirstName":"'. $this->getFirstname() .'",
 			"BillingLastName":"'. $this->getLastname() .'",
-			"BillingTelephone":"'. $this->getTelephone() .'",
+			"BillingTelephone":"'. $this->getTelephone() .'"
 		}';
-		$encodedState=json_encode(json_decode($state));
+		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
 
 		$formFields['state']						= $encodedState;
 
-
-
-
-
 		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
 		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
-		$formFields['ApplicationIDSecondary']		= json_encode($stores);
+		$formFields['ApplicationIDSecondary']		= '{'.json_encode($stores).'}';
 		
 		$formFields['ApprovalCode']					= '';
 		$formFields['Approved_Transactions_Count']	= '';
@@ -290,7 +286,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['BillingState']					= $billingAddress->getRegion();
 		
 		
-		$formFields['CaptureAmount']				= '';
+		$formFields['CaptureAmount']				= $this->getOrderAmount();
 		
 		$formFields['CPMReturnCode']				= '';
 		$formFields['CPMReturnMessage']				= '';
@@ -342,7 +338,7 @@ $formFields['Check_CPM_Return_Message']		= '';
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
     	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
         }*/
-		var_dump($formFields);die();
+
 		return $formFields;
 	}
 }
