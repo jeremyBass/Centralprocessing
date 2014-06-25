@@ -23,8 +23,8 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 		//url-ify the data for the POST
 		$fields_string="";
-		
-		$fields_string .= ($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestwithAddress":"AuthRequestwithAddress")."&";
+		$url = trim($helper->getCentralProcessingUrl(),'/');
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithCancelURL":"AuthRequestWithCancelURL");
 		
 		
 		foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
@@ -34,8 +34,8 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		$wrapper = fopen('php://temp', 'r+');
 		
 		//open connection
-		$ch = curl_init();
-		$url = $helper->getCentralProcessingUrl();
+		$ch = curl_init($url);
+		
 		curl_setopt($ch, CURLOPT_VERBOSE, true);
 		curl_setopt($ch, CURLOPT_STDERR, $wrapper);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
