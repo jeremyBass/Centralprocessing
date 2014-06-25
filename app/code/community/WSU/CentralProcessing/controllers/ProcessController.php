@@ -206,13 +206,18 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		$ApprovalCode = $nodes->ApprovalCode;
 		$CreditCardType = $nodes->CreditCardType;
 		$MaskedCreditCardNumber = $nodes->MaskedCreditCardNumber;
+		$ApplicationStateData = $nodes->ApplicationStateData;
+		
+		$state = json_decode($ApplicationStateData);
+		
 		
 		var_dump($ResponseReturnCode);
 		var_dump($ResponseGUID);
 		var_dump($ApprovalCode);
 		var_dump($CreditCardType);
 		var_dump($MaskedCreditCardNumber);
-
+		var_dump($ApplicationStateData);
+		var_dump($state);
 		die();
 		
 	}
