@@ -7,12 +7,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	
 
-	private function removeResponseXMLNS($input) { 
-		// Remove XML response namespaces one by one 
-		$input = str_replace(' xmlns="webservice.it.wsu.edu"','',$input); 
-		$input = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','',$input); 
-		return str_replace(' xmlns:xsd="http://www.w3.org/2001/XMLSchema"','',$input); 
-	} 
+
 
 	
 	
@@ -73,7 +68,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 		var_dump($result);
 		
-		$nodes = new SimpleXMLElement($this->removeResponseXMLNS($result));
+		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
 		
 		$urlRedirect = $nodes->WebPageURLAndGUID;
 		
