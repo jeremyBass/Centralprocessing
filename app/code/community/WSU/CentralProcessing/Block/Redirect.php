@@ -4,6 +4,19 @@
  * @package    Wsu_CentralProcessing
  */
 class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
+	
+	
+
+	private function removeResponseXMLNS($input) { 
+		// Remove XML response namespaces one by one 
+		$input = str_replace(' xmlns="webservice.it.wsu.edu"','',$input); 
+		$input = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','',$input); 
+		return str_replace(' xmlns:xsd="http://www.w3.org/2001/XMLSchema"','',$input); 
+	} 
+
+	
+	
+	
 	protected function _toHtml() {
 	$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
 	$helper				= Mage::helper('centralprocessing');
@@ -56,55 +69,17 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		curl_close($ch);
 		var_dump($url);
 		var_dump($fields_string);
-		var_dump($result);die();
-
-
 		
 
-
-
-        $merchant_id = Mage::getStoreConfig('payment/centralprocessing/merchant_id');
-        //$formFields = $standard->getFormFields();
-        $idSuffix = Mage::helper('core')->uniqHash();
-        $submitButton = new Varien_Data_Form_Element_Submit(array(
-            'value'    => $this->__('Click here if you are not redirected within 10 seconds...'),
-        ));
-        $id = "submit_to_centralprocessing_button_{$idSuffix}";
-        $submitButton->setId($id);
-		$form->addElement($submitButton);
+		var_dump($result);
 		
-
-        // session id -> order id
-        //$session_id = $reference_number = $formFields['reference_number'];
-/*	
-        $org_id = '';
-        if(!Mage::getStoreConfig('payment/centralprocessing/mode')) {
-            // test mode
-            $org_id = '1snn5n9w';
-        } else {
-            // live mode
-            $org_id = 'k8vif92e';
-        }   
-*/
- $html = '';
-        //$html .= '<h1> There would be a form that would alot post</h1>';
-/*
-        $html .= '<p style="background:url(https://h.online-metrix.net/fp/clear.png?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '&m=1)"></p>';
-        $html .= '<img style="display:none;" src="https://h.online-metrix.net/fp/clear.png?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '&m=2" alt="">';
-        $html .= '<object type="application/x-shockwave-flash" data="https://h.online-metrix.net/fp/fp.swf?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '" width="1" height="1" id="thm_fp"> <param name="movie" value="https://h.online-metrix.net/fp/fp.swf?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '" /> <div></div> </object>';
-        $html .= '<script src="https://h.online-metrix.net/fp/check.js?org_id=' . $org_id . '&session_id=' . $merchant_id . $session_id . '" type="text/javascript"> </script>';
-*/
-        $html.= $this->__('You will be redirected to CyberSource Secure Acceptance WM in a few seconds.');
-		$html.= $form->toHtml();
+		$nodes = new SimpleXMLElement($this->removeResponseXMLNS($result));
 		
-		//var_dump($html);die();
+		$urlRedirect = $nodes->WebPageURLAndGUID;
 		
+		var_dump($urlRedirect);
 		
-		// die($html);
-/*        $html.= '<script type="text/javascript">document.getElementById("centralprocessing_payment_checkout").submit();</script>';
-		
-        $html.= '';
-*/
-		return $html;
+		header("Location: ".$urlRedirect);
+		exit();
     }
 }

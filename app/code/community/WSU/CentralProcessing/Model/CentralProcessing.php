@@ -266,6 +266,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['state']						= $encodedState;
 
 		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
+		$formFields['OneStepTranType']				= 'WEBBPART';
 		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
 		$formFields['ApplicationIDSecondary']		= '{'.json_encode($stores).'}';
 		
@@ -283,7 +284,11 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['BillingCity']					= $billingAddress->getCity();
 		$formFields['BillingZipCode']				= $billingAddress->getPostcode();
 		$formFields['BillingCountry']				= $billingAddress->getCountry();
-		$formFields['BillingState']					= $billingAddress->getRegion();
+		
+		$region = Mage::getModel('directory/region')->load($billingAddress->getRegionId());
+ 		$abbr = $region->getCode();
+		
+		$formFields['BillingState']					= $abbr;
 		
 		
 		$formFields['CaptureAmount']				= $this->getOrderAmount();
@@ -295,8 +300,8 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['EmailAddressDeptContact']		= '';
 		$formFields['MaskedCreditCardNumber']		= '';
 		
-		$formFields['OneStepTranType']				= '';
 		
+		$formFields['profileSeqNum']				= '01';//$order->getRealOrderId();
 		
 		
 		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
@@ -338,7 +343,7 @@ $formFields['Check_CPM_Return_Message']		= '';
     	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
     	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralProcessingUrl()."\n".print_r($formFields, 1), ''));
         }*/
-
+//var_dump($formFields);
 		return $formFields;
 	}
 }
