@@ -38,6 +38,10 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $this->__($message);
 	}
 
+	public function getAuthorizationType(){ 
+		return $this->getConfig('authorization_type');
+	}
+
 	public function getIssuerUrls() {
 		return array("live" => $this->getConfig('live_hop_url'),
 					 "test" => $this->getConfig('test_hop_url'));
