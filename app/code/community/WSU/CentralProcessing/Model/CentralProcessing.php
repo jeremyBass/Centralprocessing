@@ -187,7 +187,7 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 				$_cat = Mage::getModel('catalog/category')->load($category_id) ;
 				$categories[] = $_cat->getName();
 			}
-			$products[] = $_item->getName();
+			$products[] = $_item->getSku();
 			$stores[] = $_item->getStoreId(); 
 		}
 
@@ -250,16 +250,12 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 		$formFields['signature']					= $this->getHashSign($formFields);
 */
 		$state = '{
-			"oi":"'.$order->getId().'",
-			"roi":"'.$order->getRealOrderId().'",
+			"oid":"'.$order->getId().'",
+			"roid":"'.$order->getRealOrderId().'",
 			"icount":"'.count($items).'",
 			"icat":"'.implode(',', array_unique($categories)).'",
-			"items":"'.implode(',', array_unique($products)).'",
-			"BillingEmail":"'. $this->getEmail() .'",
-			"BillingCompany":"'. $this->getCompany() .'",
-			"BillingFirstName":"'. $this->getFirstname() .'",
-			"BillingLastName":"'. $this->getLastname() .'",
-			"BillingTelephone":"'. $this->getTelephone() .'"
+			"isku":"'.implode(',', array_unique($products)).'",
+			"bEmail":"'. $this->getEmail() .'"
 		}';
 		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
 
