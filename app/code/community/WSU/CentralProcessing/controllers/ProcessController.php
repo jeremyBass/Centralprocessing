@@ -211,14 +211,23 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		$state = json_decode($ApplicationStateData);
 		
 		
+		/*
+		works but keep for the moment
 		var_dump($ResponseReturnCode);
 		var_dump($ResponseGUID);
 		var_dump($ApprovalCode);
 		var_dump($CreditCardType);
 		var_dump($MaskedCreditCardNumber);
 		var_dump($ApplicationStateData);
+		*/
 		var_dump($state);
-		die();
+
+			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+			var_dump($order);
+			var_dump($order->getId());
+
+		
+		die('ending it');
 		
 	}
 
