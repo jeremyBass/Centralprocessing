@@ -53,7 +53,15 @@ class Wsu_CentralProcessing_Model_CentralProcessing extends Mage_Payment_Model_M
 
 
 	//protected $_allowCurrencyCode = array('EUR', 'USD');
-
+	public function assignData($data) {
+        if (!($data instanceof Varien_Object)) {
+            $data = new Varien_Object($data);
+        }
+        $info = $this->getInfoInstance();
+        /*$info->setCheckNo($data->getCheckNo())
+        ->setCheckDate($data->getCheckDate());*/ //i don't think this is the right place, come back to.
+        return $this;
+    }
 	public function validate() {
         parent::validate();
         $paymentInfo = $this->getInfoInstance();
