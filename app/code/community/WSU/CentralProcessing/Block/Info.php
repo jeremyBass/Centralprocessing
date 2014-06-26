@@ -27,7 +27,7 @@ class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
             Mage::helper('payment')->__('GUID') => $info->getResponseGuid(),
 			Mage::helper('payment')->__('approval code') => $info->getApprovalCode(),
 			Mage::helper('payment')->__('card type') => $info->getCardType(),
-			Mage::helper('payment')->__('cc number') => $info->getMaskedCcNumber(),
+			Mage::helper('payment')->__('cc number') => '############'.$info->getMaskedCcNumber(),
         ));
         return $transport;
     }
