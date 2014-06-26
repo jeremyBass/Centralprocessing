@@ -14,6 +14,7 @@ class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
     }
 	
     protected function _prepareSpecificInformation($transport = null){
+		$helper				= Mage::helper('centralprocessing');
         if ($this->_paymentSpecificInformation !== null) {
             return $this->_paymentSpecificInformation;
         }
@@ -26,7 +27,7 @@ class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
             Mage::helper('payment')->__('Response Return Code') => "".$info->getResponseReturnCode(),
             Mage::helper('payment')->__('GUID') => $info->getResponseGuid(),
 			Mage::helper('payment')->__('Approval Code') => $info->getApprovalCode(),
-			Mage::helper('payment')->__('Card Type') => $info->getCardType(),
+			Mage::helper('payment')->__('Card Type') => $helper->getCardType($info->getCardType()),
 			Mage::helper('payment')->__('Masked CC Number') => '############'.$info->getMaskedCcNumber()
         ));
 

@@ -227,11 +227,13 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 			var_dump($order->getId());
 			
 			$payment = $order->getPayment();
-			$payment->setResponseReturnCode($ResponseReturnCode);
-			$payment->setResponseGuid($ResponseGUID);
-			$payment->setApprovalCode($ApprovalCode);
+
 			$payment->setCardType($CreditCardType);
 			$payment->setMaskedCcNumber($MaskedCreditCardNumber);
+			
+			$payment->setResponseGuid($ResponseGUID);
+			$payment->setResponseReturnCode($ResponseReturnCode);
+			$payment->setApprovalCode($ApprovalCode);
 
 			$payment->save();
 			
