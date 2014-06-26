@@ -47,6 +47,25 @@
                 <class>Wsu_CentralProcessing_Helper</class>
             </centralprocessing>
         </helpers>
+		<fieldsets>
+			 <sales_convert_quote_payment>
+				<response_return_code>
+					<to_order_payment>*</to_order_payment>
+				</response_return_code>
+				<response_guid>
+					<to_order_payment>*</to_order_payment>
+				</response_guid>
+				<approval_code>
+					<to_order_payment>*</to_order_payment>
+				</approval_code>
+				<card_type>
+					<to_order_payment>*</to_order_payment>
+				</card_type>
+				<masked_cc_number>
+					<to_order_payment>*</to_order_payment>
+				</masked_cc_number>
+			 </sales_convert_quote_payment>
+		</fieldsets>
     </global>
     <frontend>
         <routers>
