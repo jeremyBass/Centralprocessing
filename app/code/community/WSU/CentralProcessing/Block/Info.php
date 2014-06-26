@@ -23,12 +23,13 @@ class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
         $transport = new Varien_Object();
         $transport = parent::_prepareSpecificInformation($transport);
         $transport->addData(array(
-            Mage::helper('payment')->__('Response Return Code') => $info->getResponseReturnCode(),
+            Mage::helper('payment')->__('Response Return Code') => "".$info->getResponseReturnCode(),
             Mage::helper('payment')->__('GUID') => $info->getResponseGuid(),
 			Mage::helper('payment')->__('Approval Code') => $info->getApprovalCode(),
 			Mage::helper('payment')->__('Card Type') => $info->getCardType(),
 			Mage::helper('payment')->__('Masked CC Number') => '############'.$info->getMaskedCcNumber()
         ));
+
         return $transport;
     }
 
