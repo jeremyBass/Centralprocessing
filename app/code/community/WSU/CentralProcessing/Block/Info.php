@@ -12,4 +12,26 @@ class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
     public function getMethodCode() {
         return $this->getInfo()->getMethodInstance()->getCode();
     }
+	
+    protected function _prepareSpecificInformation($transport = null){
+        if ($this->_paymentSpecificInformation !== null) {
+            return $this->_paymentSpecificInformation;
+        }
+
+        $info = $this->getInfo();
+
+        $transport = new Varien_Object();
+        $transport = parent::_prepareSpecificInformation($transport);
+        $transport->addData(array(
+            Mage::helper('payment')->__('Response Return Code') => $info->getResponseReturnCode(),
+            Mage::helper('payment')->__('GUID') => $info->getResponseGuid(),
+			Mage::helper('payment')->__('approval code') => $info->getApprovalCode(),
+			Mage::helper('payment')->__('card type') => $info->getCardType(),
+			Mage::helper('payment')->__('cc number') => $info->getMaskedCcNumber(),
+        ));
+        return $transport;
+    }
+
+	
+	
 }
