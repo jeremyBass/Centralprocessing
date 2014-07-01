@@ -78,5 +78,17 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
     protected function getIpnUrl() {
         return Mage::getUrl('processing/process/ipn', array('_secure' => true));
     }
+	
+	public function getCardType($code){
+		$cards=Mage::getModel('centralprocessing/system_config_source_cards_type')->toOptionArray();
+		return $cards[$code];	
+	}
+	
+	
+	
+	
+	
+	
+	
 
 }

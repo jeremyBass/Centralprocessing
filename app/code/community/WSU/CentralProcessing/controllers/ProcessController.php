@@ -201,24 +201,46 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
 		
-		$ResponseReturnCode = $nodes->ResponseReturnCode;
-		$ResponseGUID = $nodes->ResponseGUID;
-		$ApprovalCode = $nodes->ApprovalCode;
-		$CreditCardType = $nodes->CreditCardType;
-		$MaskedCreditCardNumber = $nodes->MaskedCreditCardNumber;
+		$ResponseReturnCode = (string) $nodes->ResponseReturnCode;
+		$ResponseGUID = (string) $nodes->ResponseGUID;
+		$ApprovalCode = (string) $nodes->ApprovalCode;
+		$CreditCardType = (string) $nodes->CreditCardType;
+		$MaskedCreditCardNumber = (string) $nodes->MaskedCreditCardNumber;
 		$ApplicationStateData = $nodes->ApplicationStateData;
 		
 		$state = json_decode($ApplicationStateData);
 		
 		
+		/*
+		works but keep for the moment
 		var_dump($ResponseReturnCode);
 		var_dump($ResponseGUID);
 		var_dump($ApprovalCode);
 		var_dump($CreditCardType);
 		var_dump($MaskedCreditCardNumber);
 		var_dump($ApplicationStateData);
+		*/
 		var_dump($state);
-		die();
+
+			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+			//var_dump($order);
+			var_dump($order->getId());
+			
+			$payment = $order->getPayment();
+
+			$payment->setCardType($CreditCardType);
+			$payment->setMaskedCcNumber($MaskedCreditCardNumber);
+			
+			$payment->setResponseGuid($ResponseGUID);
+			$payment->setResponseReturnCode($ResponseReturnCode);
+			$payment->setApprovalCode($ApprovalCode);
+
+			$payment->save();
+			
+			var_dump($payment);
+			
+		
+		die('ending it');
 		
 	}
 
