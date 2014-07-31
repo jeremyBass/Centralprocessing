@@ -193,11 +193,11 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		
 		//close connection
 		curl_close($ch);
-		var_dump($url);
-		var_dump($fields_string);
+		//var_dump($url);
+		//var_dump($fields_string);
 		
 
-		var_dump($result);
+		//var_dump($result);
 		
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
 		
@@ -220,11 +220,11 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		var_dump($MaskedCreditCardNumber);
 		var_dump($ApplicationStateData);
 		*/
-		var_dump($state);
+		//var_dump($state);
 
 			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
 			//var_dump($order);
-			var_dump($order->getId());
+			//var_dump($order->getId());
 			
 			$payment = $order->getPayment();
 
@@ -237,7 +237,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 
 			$payment->save();
 			
-			var_dump($payment);
+			//var_dump($payment);
 			
 		$this->_redirect('checkout/onepage/success');
 		return;
