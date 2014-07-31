@@ -240,7 +240,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			var_dump($payment);
 			
 		
-		die('ending it');
+		//die('ending it');
 		
 	}
 
