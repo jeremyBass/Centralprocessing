@@ -113,7 +113,7 @@
 				<enable_log>1</enable_log>
                	<model>centralprocessing/centralprocessing</model>
                	<title>Credit Card</title>
-				<checkout_info>You will be redirected to make a payment and compelete the order.</checkout_info>
+				<checkout_info>You will be redirected to make a payment and complete the order.</checkout_info>
                 <mode>0</mode>
 				<order_status>pending</order_status>
                 <debug_flag>1</debug_flag>
