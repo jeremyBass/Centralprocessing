@@ -239,7 +239,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			
 			var_dump($payment);
 			
-		
+		$this->_redirect('checkout/onepage/success');
+		return;
 		//die('ending it');
 		
 	}
