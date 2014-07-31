@@ -1,9 +1,9 @@
 <?php
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
-class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
+class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
     public function getConfig($field, $default = null) {
         $value = Mage::getStoreConfig('payment/centralprocessing/' . $field);
         if(!isset($value) or trim($value) == ''){
@@ -54,7 +54,7 @@ class Wsu_CentralProcessing_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	}
 
-	public function getCentralProcessingUrl() {
+	public function getCentralprocessingUrl() {
 		$setIssuerUrls 	= $this->getIssuerUrls();
 		if($this->getConfig('mode')){
 			return $setIssuerUrls["live"];

@@ -2,25 +2,25 @@
 <!--
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
  -->
 <config>
     <modules>
-        <Wsu_CentralProcessing>
+        <Wsu_Centralprocessing>
             <version>0.0.1</version>
-        </Wsu_CentralProcessing>
+        </Wsu_Centralprocessing>
     </modules>
     <global>
         <models>
             <centralprocessing>
-                <class>Wsu_CentralProcessing_Model</class>
+                <class>Wsu_Centralprocessing_Model</class>
             </centralprocessing>
         </models>
         <resources>
 			<centralprocessing_setup>
 				<setup>
-					<module>Wsu_CentralProcessing</module>
+					<module>Wsu_Centralprocessing</module>
 				</setup>
 				<connection>
 					<use>core_setup</use>
@@ -39,12 +39,12 @@
         </resources>
         <blocks>
             <centralprocessing>
-                <class>Wsu_CentralProcessing_Block</class>
+                <class>Wsu_Centralprocessing_Block</class>
             </centralprocessing>
         </blocks>
         <helpers>
             <centralprocessing>
-                <class>Wsu_CentralProcessing_Helper</class>
+                <class>Wsu_Centralprocessing_Helper</class>
             </centralprocessing>
         </helpers>
 		<fieldsets>
@@ -72,7 +72,7 @@
             <centralprocessing>
                 <use>standard</use>
                 <args>
-                    <module>Wsu_CentralProcessing</module>
+                    <module>Wsu_Centralprocessing</module>
                     <frontName>processing</frontName>
                 </args>
             </centralprocessing>

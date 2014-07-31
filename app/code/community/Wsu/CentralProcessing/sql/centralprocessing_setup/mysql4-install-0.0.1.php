@@ -1,7 +1,7 @@
 <?php
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
 $installer = $this;
 

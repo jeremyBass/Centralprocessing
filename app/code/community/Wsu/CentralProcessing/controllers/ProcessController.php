@@ -1,9 +1,9 @@
 <?php
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
-class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front_Action {
+class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front_Action {
     protected $_order;
 
     protected function _getCheckout() {
@@ -17,7 +17,7 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
         }
     }
 
-    public function getCentralProcessing() {
+    public function getCentralprocessing() {
         return Mage::getSingleton('centralprocessing/centralprocessing');
     }
 
@@ -166,7 +166,7 @@ class Wsu_CentralProcessing_ProcessController extends Mage_Core_Controller_Front
 		$fields_string="RequestGUID=".$GUID;
 		
 		
-		$url = trim($helper->getCentralProcessingUrl(),'/');
+		$url = trim($helper->getCentralprocessingUrl(),'/');
 		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
 		
 		

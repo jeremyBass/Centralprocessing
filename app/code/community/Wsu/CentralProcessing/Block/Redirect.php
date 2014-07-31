@@ -1,9 +1,9 @@
 <?php
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
-class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
+class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	
 
@@ -16,7 +16,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
 	$helper				= Mage::helper('centralprocessing');
         $form 		= new Varien_Data_Form();
-        $form->setAction($helper->getCentralProcessingUrl())
+        $form->setAction($helper->getCentralprocessingUrl())
             ->setId('centralprocessing_payment_checkout')
             ->setName('centralprocessing_payment_checkout')
             ->setMethod('POST')
@@ -31,7 +31,7 @@ class Wsu_CentralProcessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 		//url-ify the data for the POST
 		$fields_string="";
-		$url = trim($helper->getCentralProcessingUrl(),'/');
+		$url = trim($helper->getCentralprocessingUrl(),'/');
 		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithCancelURL":"AuthRequestWithCancelURL");
 		
 		

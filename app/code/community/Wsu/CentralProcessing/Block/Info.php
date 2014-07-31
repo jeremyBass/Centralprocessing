@@ -1,9 +1,9 @@
 <?php
 /**
  * @category   Cybersource
- * @package    Wsu_CentralProcessing
+ * @package    Wsu_Centralprocessing
  */
-class Wsu_CentralProcessing_Block_Info extends Mage_Payment_Block_Info {
+class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
     protected function _construct() {
         parent::_construct();
         //$this->setTemplate('wsu/centralprocessing/info.phtml');

@@ -1,5 +1,5 @@
 <?php
-class Wsu_CentralProcessing_IndexController extends Mage_Checkout_Controller_Action{
+class Wsu_Centralprocessing_IndexController extends Mage_Checkout_Controller_Action{
 
 	/**
 	 * Checkout page
