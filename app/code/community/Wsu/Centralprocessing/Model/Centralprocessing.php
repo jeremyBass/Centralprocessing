@@ -261,10 +261,13 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 			"oid":"'.$order->getId().'",
 			"roid":"'.$order->getRealOrderId().'",
 			"icount":"'.count($items).'",
-			"icat":"'.implode(',', array_unique($categories)).'",
-			"isku":"'.implode(',', array_unique($products)).'",
 			"bEmail":"'. $this->getEmail() .'"
 		}';
+		/*
+			"icat":"'.implode(',', array_unique($categories)).'",
+			"isku":"'.implode(',', array_unique($products)).'",
+		*/
+		
 		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
 
 		$formFields['state']						= $encodedState;
@@ -310,7 +313,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		
 		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
 		$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
-		//$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
+		$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
 		
 		$formFields['StyleSheetKey']				= '';
 		$formFields['WebPageURLAndGUID']			= '';
