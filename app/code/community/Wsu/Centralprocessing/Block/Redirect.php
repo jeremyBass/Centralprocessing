@@ -13,8 +13,8 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	
 	protected function _toHtml() {
-	$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
-	$helper				= Mage::helper('centralprocessing');
+		$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
+		$helper				= Mage::helper('centralprocessing');
         $form 		= new Varien_Data_Form();
         $form->setAction($helper->getCentralprocessingUrl())
             ->setId('centralprocessing_payment_checkout')
@@ -63,22 +63,30 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		//close connection
 		curl_close($ch);
 
-		
+		/*
 		ob_start();
 		var_dump($url);
 		var_dump($fields_string);
 		var_dump($result);
 		$log = ob_get_clean();
 		file_put_contents("redirect-result.txt", $log);
-		
+		*/
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+		//$code = $nodes->RequestReturnCode;  // put in just in case
 		$urlRedirect = $nodes->WebPageURLAndGUID;
+		$guid = $nodes->RequestGUID;
 		
+		$order = Mage::getModel('sales/order')->load($formFields['ApplicationStateData']['roid'],'increment_id');
+		$payment = $order->getPayment();
+		$payment->setResponseGuid($guid);
+		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+		$payment->save();		
+		/*
 		ob_start();
 		var_dump($urlRedirect);
 		$log .= ob_get_clean();		
 		file_put_contents("redirect.txt", $log);
-		
+		*/
 		header("Location: ".$urlRedirect);
 		exit();
     }
