@@ -313,7 +313,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		
 		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
 		$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
-		$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
+		//$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
 		
 		$formFields['StyleSheetKey']				= '';
 		$formFields['WebPageURLAndGUID']			= '';
