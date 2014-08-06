@@ -32,6 +32,7 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
 		$transData[Mage::helper('payment')->__('GUID')]=$info->getResponseGuid();
 		$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
+		$transData[Mage::helper('payment')->__('CC Mode')]=$info->getCcMode();
 
         $transport->addData($transData);
 
