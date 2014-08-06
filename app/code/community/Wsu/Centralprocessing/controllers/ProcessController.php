@@ -234,7 +234,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			$payment->setResponseGuid($ResponseGUID);
 			$payment->setResponseReturnCode($ResponseReturnCode);
 			$payment->setApprovalCode($ApprovalCode);
-
+			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 			$payment->save();
 			
 			//var_dump($payment);
