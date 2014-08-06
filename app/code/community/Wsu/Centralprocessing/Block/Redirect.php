@@ -32,7 +32,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		//url-ify the data for the POST
 		$fields_string="";
 		$url = trim($helper->getCentralprocessingUrl(),'/');
-		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithCancelURL":"AuthRequestWithCancelURL");
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithAddress":"AuthCapRequestWithAddress");//AuthRequestWithCancelURL
 		
 		
 		foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
