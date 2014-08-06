@@ -239,7 +239,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			$payment->setApprovalCode($ApprovalCode);
 			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 			$payment->save();
-			
+			$order->sendNewOrderEmail(); //already sent above
 			//var_dump($payment);
 			
 		$this->_redirect('checkout/onepage/success');
