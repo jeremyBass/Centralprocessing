@@ -196,7 +196,10 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		//var_dump($url);
 		//var_dump($fields_string);
 		
-
+		ob_start();
+		var_dump($result);
+		$log = ob_get_clean();
+		file_put_contents("result.txt", $log);
 		//var_dump($result);
 		
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
