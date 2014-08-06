@@ -270,7 +270,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		$formFields['state']						= $encodedState;
 
 		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
-		$formFields['OneStepTranType']				= 'WEBBPART';
+		$formFields['OneStepTranType']				= $this->getConfigData('tran_type');
 		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
 		$formFields['ApplicationIDSecondary']		= '{'.json_encode($stores).'}';
 		
