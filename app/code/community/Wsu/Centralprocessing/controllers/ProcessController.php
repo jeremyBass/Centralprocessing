@@ -167,7 +167,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		
 		
 		$url = trim($helper->getCentralprocessingUrl(),'/');
-		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithAddress":"AuthCapRequestWithAddress");		
 		
 		
 		$wrapper = fopen('php://temp', 'r+');
