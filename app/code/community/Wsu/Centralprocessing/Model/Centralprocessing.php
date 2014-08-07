@@ -287,7 +287,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		$formFields['BeginDateTime']				= '';
 		$formFields['EndDateTime']					= '';
 		
-		$formFields['BillingAddress']				= $billingAddress->getStreet(1).'\r\n'.$billingAddress->getStreet(2);
+		$formFields['BillingAddress']				= $billingAddress->getStreet(1).' '.$billingAddress->getStreet(2);
 		$formFields['BillingCity']					= $billingAddress->getCity();
 		$formFields['BillingZipCode']				= $billingAddress->getPostcode();
 		$formFields['BillingCountry']				= $billingAddress->getCountry();
