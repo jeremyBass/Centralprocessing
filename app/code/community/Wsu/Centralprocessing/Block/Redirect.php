@@ -77,8 +77,8 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		//$code = $nodes->RequestReturnCode;  // put in just in case
 		$urlRedirect = $nodes->WebPageURLAndGUID;
 		$guid = $nodes->RequestGUID;
-		
-		$order = Mage::getModel('sales/order')->load($formFields['ApplicationStateData']['roid'],'increment_id');
+		$state = json_decode($formFields['ApplicationStateData']);
+		$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
 		$payment = $order->getPayment();
 		$payment->setResponseGuid($guid);
 		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
