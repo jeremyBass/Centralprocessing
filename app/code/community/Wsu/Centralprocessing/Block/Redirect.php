@@ -62,7 +62,9 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		
 		//close connection
 		curl_close($ch);
-
+		var_dump($url);
+		var_dump($fields_string);
+		var_dump($result);
 		/*
 		ob_start();
 		var_dump($url);
