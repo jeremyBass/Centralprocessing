@@ -81,7 +81,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	
 	public function getCardType($code){
 		$cards=Mage::getModel('centralprocessing/system_config_source_cards_type')->toOptionArray();
-		return $cards[$code];	
+		return isset($cards[$code])?$cards[$code]:"unset";
 	}
 	
 	
