@@ -65,14 +65,14 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		var_dump($url);
 		var_dump($fields_string);
 		var_dump($result);
-		/*
+		
 		ob_start();
 		var_dump($url);
 		var_dump($fields_string);
 		var_dump($result);
 		$log = ob_get_clean();
 		file_put_contents("redirect-result.txt", $log);
-		*/
+		/**/
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
 		//$code = $nodes->RequestReturnCode;  // put in just in case
 		$urlRedirect = $nodes->WebPageURLAndGUID;
@@ -83,12 +83,12 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		$payment->setResponseGuid($guid);
 		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 		$payment->save();		
-		/*
+		
 		ob_start();
 		var_dump($urlRedirect);
 		$log .= ob_get_clean();		
 		file_put_contents("redirect.txt", $log);
-		*/
+		/**/
 		header("Location: ".$urlRedirect);
 		exit();
     }
