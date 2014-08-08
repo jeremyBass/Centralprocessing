@@ -31,18 +31,13 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		
 		
 		$GUID = $info->getResponseGuid();
-		$link="";
-		if($helper->getConfig('mode')>0){
-			$url = trim($helper->getCentralprocessingUrl(),'/');
-			$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");
-			$link=sprintf("<a href='%s' target='_blank'>Check the record</a>",$url);
-		}
-		//https://ewebservice.wsu.edu/CentralPaymentSite_WS/service.asmx/AuthCapResponse
+		$mode = $info->getCcMode();
+		$info=$helper->getResponseGuidInfo($GUID,$mode);
 
 		$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
-		$transData[Mage::helper('payment')->__('GUID')]=$GUID.$link;
+		$transData[Mage::helper('payment')->__('GUID')]=$GUID.$info;
 		$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
-		$transData[Mage::helper('payment')->__('CC Mode')]=$info->getCcMode();
+		$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
 
         $transport->addData($transData);
 
