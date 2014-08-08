@@ -68,15 +68,14 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		var_dump($fields_string);
 		var_dump($result);
 		$log = ob_get_clean();
-
 		Mage::log($log,Zend_Log::NOTICE,"redirect-result.txt");
 		
 		
 		/**/
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
 		//$code = $nodes->RequestReturnCode;  // put in just in case
-		$urlRedirect = $nodes->WebPageURLAndGUID;
-		$guid = $nodes->RequestGUID;
+		$urlRedirect = (string) $nodes->WebPageURLAndGUID;
+		$guid = (string) $nodes->RequestGUID;
 		$state = json_decode($formFields['ApplicationStateData']);
 		$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
 		$payment = $order->getPayment();
@@ -87,8 +86,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 		ob_start();
 		var_dump($urlRedirect);
-		$log = ob_get_clean();		
-
+		$log = ob_get_clean();
 		Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
 		
 		
