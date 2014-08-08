@@ -23,12 +23,12 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 	
 	public function getResponseGuidInfo($GUID,$mode){
-
+		$html="";
+		if($GUID!=""){
 			$fields_string="RequestGUID=".$GUID;
 			$url = trim($this->getCentralprocessingUrl($mode),'/');
 			$url .= DS.($this->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
-			
-			
+
 			$wrapper = fopen('php://temp', 'r+');
 			
 			//open connection
@@ -51,8 +51,8 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 			//close connection
 			curl_close($ch);
 
-			
-		$html=sprintf("<a href='#' id='showGuidInfo'>record info</a><div id='guidInfo' style='display:none;'>%s</div><script>(function($){ $(document).ready(function(){ $('#showGuidInfo').on('click',function(){ if( $('#guidInfo').is(':visible')){ $('#guidInfo').hide(); }else{ $('#guidInfo').show(); } });   }); })(jQuery);</script>",$result);
+			$html=sprintf("<a href='#' id='showGuidInfo'>record info</a><div id='guidInfo' style='display:none;'>%s</div><script>(function($){ $(document).ready(function(){ $('#showGuidInfo').on('click',function(){ if( $('#guidInfo').is(':visible')){ $('#guidInfo').hide(); }else{ $('#guidInfo').show(); } });   }); })(jQuery);</script>",$result);
+		}
 		return $html;
 	}
 	
