@@ -17,8 +17,6 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 		if(!$this->getConfig('enable_log')){
 			return;
 		}
-		$separator = "===================================================================";
-        Mage::log($separator, null, 'centralprocessing.log', true);
         Mage::log($data, null, 'centralprocessing.log', true);
     }
 	
