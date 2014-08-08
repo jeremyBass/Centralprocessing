@@ -32,7 +32,7 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		
 		$GUID = $info->getResponseGuid();
 		$mode = $info->getCcMode();
-		$GUIDinfo=$helper->getResponseGuidInfo($GUID,($mode=="live"?1:0));
+		$GUIDinfo="";//$helper->getResponseGuidInfo($GUID,($mode=="live"?1:0));
 
 		$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
 		$transData[Mage::helper('payment')->__('GUID')]=$GUID.$GUIDinfo;
