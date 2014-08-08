@@ -13,8 +13,8 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	
 	protected function _toHtml() {
-	$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
-	$helper				= Mage::helper('centralprocessing');
+		$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
+		$helper				= Mage::helper('centralprocessing');
         $form 		= new Varien_Data_Form();
         $form->setAction($helper->getCentralprocessingUrl())
             ->setId('centralprocessing_payment_checkout')
@@ -32,7 +32,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		//url-ify the data for the POST
 		$fields_string="";
 		$url = trim($helper->getCentralprocessingUrl(),'/');
-		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithCancelURL":"AuthRequestWithCancelURL");
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithAddress":"AuthCapRequestWithAddress");//AuthRequestWithCancelURL
 		
 		
 		foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
@@ -62,18 +62,35 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		
 		//close connection
 		curl_close($ch);
+
+		ob_start();
 		var_dump($url);
 		var_dump($fields_string);
-		
-
 		var_dump($result);
+		$log = ob_get_clean();
+		Mage::log($log,Zend_Log::NOTICE,"redirect-result.txt");
 		
+		
+		/**/
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
-		
-		$urlRedirect = $nodes->WebPageURLAndGUID;
-		
+		//$code = $nodes->RequestReturnCode;  // put in just in case
+		$urlRedirect = (string) $nodes->WebPageURLAndGUID;
+		$guid = (string) $nodes->RequestGUID;
+		$state = json_decode($formFields['ApplicationStateData']);
+		$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+		$payment = $order->getPayment();
+		$payment->setResponseGuid($guid);
+		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+		$payment->save();
+				
+
+		ob_start();
 		var_dump($urlRedirect);
+		$log = ob_get_clean();
+		Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
 		
+		
+		/**/
 		header("Location: ".$urlRedirect);
 		exit();
     }

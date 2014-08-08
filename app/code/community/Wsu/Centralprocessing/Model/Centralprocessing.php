@@ -261,18 +261,21 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 			"oid":"'.$order->getId().'",
 			"roid":"'.$order->getRealOrderId().'",
 			"icount":"'.count($items).'",
-			"icat":"'.implode(',', array_unique($categories)).'",
-			"isku":"'.implode(',', array_unique($products)).'",
 			"bEmail":"'. $this->getEmail() .'"
 		}';
+		/*
+			"icat":"'.implode(',', array_unique($categories)).'",
+			"isku":"'.implode(',', array_unique($products)).'",
+		*/
+		
 		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
 
 		$formFields['state']						= $encodedState;
 
 		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
-		$formFields['OneStepTranType']				= 'WEBBPART';
+		$formFields['OneStepTranType']				= $this->getConfigData('tran_type');
 		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
-		$formFields['ApplicationIDSecondary']		= '{'.json_encode($stores).'}';
+		$formFields['ApplicationIDSecondary']		= '';//'{'.json_encode($stores).'}';
 		
 		$formFields['ApprovalCode']					= '';
 		$formFields['Approved_Transactions_Count']	= '';
@@ -284,7 +287,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		$formFields['BeginDateTime']				= '';
 		$formFields['EndDateTime']					= '';
 		
-		$formFields['BillingAddress']				= $billingAddress->getStreet(1).'\r\n'.$billingAddress->getStreet(2);
+		$formFields['BillingAddress']				= $billingAddress->getStreet(1).' '.$billingAddress->getStreet(2);
 		$formFields['BillingCity']					= $billingAddress->getCity();
 		$formFields['BillingZipCode']				= $billingAddress->getPostcode();
 		$formFields['BillingCountry']				= $billingAddress->getCountry();
@@ -310,7 +313,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		
 		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
 		$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
-		$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
+		//$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
 		
 		$formFields['StyleSheetKey']				= '';
 		$formFields['WebPageURLAndGUID']			= '';

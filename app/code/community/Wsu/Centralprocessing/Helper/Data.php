@@ -21,6 +21,44 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
         Mage::log($separator, null, 'centralprocessing.log', true);
         Mage::log($data, null, 'centralprocessing.log', true);
     }
+	
+	public function getResponseGuidInfo($GUID,$mode){
+		$html="";
+		if($GUID!=""){
+			$fields_string="RequestGUID=".$GUID;
+			$url = trim($this->getCentralprocessingUrl($mode),'/');
+			$url .= DS.($this->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
+
+			$wrapper = fopen('php://temp', 'r+');
+			
+			//open connection
+			$ch = curl_init($url);
+			
+			curl_setopt($ch, CURLOPT_VERBOSE, true);
+			curl_setopt($ch, CURLOPT_STDERR, $wrapper);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			//set the url, number of POST vars, POST data
+			curl_setopt($ch,CURLOPT_URL, $url);
+			curl_setopt($ch,CURLOPT_POST, count(1));
+			curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+			
+			//execute post
+			$result = curl_exec($ch);
+			if($result === false) {
+				echo 'Curl error: ' . curl_error($ch);
+			}
+			//close connection
+			curl_close($ch);
+
+			$html=sprintf("<a href='#' id='showGuidInfo'>record info</a><div id='guidInfo' style='display:none;'>%s</div><script>(function($){ $(document).ready(function(){ $('#showGuidInfo').on('click',function(){ if( $('#guidInfo').is(':visible')){ $('#guidInfo').hide(); }else{ $('#guidInfo').show(); } });   }); })(jQuery);</script>",$result);
+		}
+		return $html;
+	}
+	
+	
+	
+	
 	public function removeResponseXMLNS($input) { 
 		// Remove XML response namespaces one by one 
 		$input = str_replace(' xmlns="webservice.it.wsu.edu"','',$input); 
@@ -54,9 +92,9 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 
 	}
 
-	public function getCentralprocessingUrl() {
+	public function getCentralprocessingUrl($mode=0) {
 		$setIssuerUrls 	= $this->getIssuerUrls();
-		if($this->getConfig('mode')){
+		if($this->getConfig('mode') || $mode==1){
 			return $setIssuerUrls["live"];
 		}else{
 			return $setIssuerUrls["test"];
@@ -81,7 +119,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	
 	public function getCardType($code){
 		$cards=Mage::getModel('centralprocessing/system_config_source_cards_type')->toOptionArray();
-		return $cards[$code];	
+		return isset($cards[$code])?$cards[$code]:"unset";
 	}
 	
 	
