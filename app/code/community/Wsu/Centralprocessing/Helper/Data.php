@@ -67,7 +67,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function getHashSign($params, $signedField = 'signed_field_names') {
 		$signedFieldNames = explode(",", $params[$signedField]);
         foreach ($signedFieldNames as &$field) {
-           $dataToSign[] = $field . "=" . $params[$field];
+           $dataToSign[] = $field . "=" . (isset($params[$field]))?$params[$field]:"";
         }
         $data      =  implode(",", $dataToSign);
 		$secretKey = $this->getConfig('secret_key');
