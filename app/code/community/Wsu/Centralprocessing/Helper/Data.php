@@ -57,7 +57,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	
 	
 	
-	public function removeResponseXMLNS($input) { 
+	public function removeResponseXMLNS($input) {
 		// Remove XML response namespaces one by one 
 		$input = str_replace(' xmlns="webservice.it.wsu.edu"','',$input); 
 		$input = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','',$input); 
@@ -65,7 +65,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	} 
 	
 	public function getHashSign($params, $signedField = 'signed_field_names') {
-		$signedFieldNames = explode(",", $params[$signedField]);
+		$signedFieldNames = (isset($params[$signedField]))?explode(",", $params[$signedField]):array();
         foreach ($signedFieldNames as &$field) {
            $dataToSign[] = $field . "=" . (isset($params[$field]))?$params[$field]:"";
         }
