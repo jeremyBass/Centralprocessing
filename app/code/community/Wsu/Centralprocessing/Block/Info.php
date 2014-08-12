@@ -12,7 +12,10 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
     public function getMethodCode() {
         return $this->getInfo()->getMethodInstance()->getCode();
     }
-	
+	public function toPdf() {
+		$this->setIsPdf(true);
+		return parent::toPdf();
+	}	
     protected function _prepareSpecificInformation($transport = null){
 		$helper				= Mage::helper('centralprocessing');
         if ($this->_paymentSpecificInformation !== null) {
@@ -42,10 +45,11 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
 			$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
 		}
-		
-		
-		
-		
+		if (!$isAdminBlock && !$this->getIsPdf()) {
+			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
+			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
+		}		
+
         $transport->addData($transData);
 
         return $transport;
