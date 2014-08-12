@@ -24,21 +24,28 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
         $transport = new Varien_Object();
         $transport = parent::_prepareSpecificInformation($transport);
 		
+		$isAdminBlock = $this->getParentBlock() && $this->getParentBlock() instanceof Mage_Adminhtml_Block_Sales_Order_Payment;
+
 		$transData=array();
-
-		$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
-		$transData[Mage::helper('payment')->__('Masked CC Number')]='############'.$info->getMaskedCcNumber();
+		
+		if ($isAdminBlock) {
+			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
+			$transData[Mage::helper('payment')->__('Masked CC Number')]='############'.$info->getMaskedCcNumber();
+			
+			
+			$GUID = $info->getResponseGuid();
+			$mode = $info->getCcMode();
+			$GUIDinfo="";//$helper->getResponseGuidInfo($GUID,($mode=="live"?1:0));
+	
+			$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
+			$transData[Mage::helper('payment')->__('GUID')]=$GUID.$GUIDinfo;
+			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
+			$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
+		}
 		
 		
-		$GUID = $info->getResponseGuid();
-		$mode = $info->getCcMode();
-		$GUIDinfo="";//$helper->getResponseGuidInfo($GUID,($mode=="live"?1:0));
-
-		$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
-		$transData[Mage::helper('payment')->__('GUID')]=$GUID.$GUIDinfo;
-		$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
-		$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
-
+		
+		
         $transport->addData($transData);
 
         return $transport;
