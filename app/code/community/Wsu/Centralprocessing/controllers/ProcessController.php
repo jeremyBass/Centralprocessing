@@ -228,8 +228,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		
 		
 
-		$helper				= Mage::helper('centralprocessing');
-		$GUID=$_REQUEST['GUID'];
+		$helper	= Mage::helper('centralprocessing');
+		$GUID	= Mage::app()->getRequest()->getParam('GUID');//$_REQUEST['GUID'];
 		//url-ify the data for the POST
 		$fields_string="RequestGUID=".$GUID;
 		
