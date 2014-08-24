@@ -18,7 +18,7 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 	}	
     protected function _prepareSpecificInformation($transport = null){
 		$helper				= Mage::helper('centralprocessing');
-        if ($this->_paymentSpecificInformation !== null) {
+        if (!is_null($this->_paymentSpecificInformation)) {
             return $this->_paymentSpecificInformation;
         }
 		
