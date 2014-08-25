@@ -274,8 +274,8 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 
 		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
 		$formFields['OneStepTranType']				= $this->getConfigData('tran_type');
-		$formFields['ApplicationIDPrimary']			= 'WSU-Magento';
-		$formFields['ApplicationIDSecondary']		= '';//'{'.json_encode($stores).'}';
+		$formFields['ApplicationIDPrimary']			= 'WSU-Magento--'.( (is_array($stores)?implode('-',array_unique($stores)):$stores) );//'{'.json_encode($stores).'}';
+		$formFields['ApplicationIDSecondary']		= $billingAddress->getFirstname().' '.$billingAddress->getLastname();
 		
 		$formFields['ApprovalCode']					= '';
 		$formFields['Approved_Transactions_Count']	= '';

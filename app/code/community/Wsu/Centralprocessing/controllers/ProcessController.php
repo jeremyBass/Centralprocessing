@@ -60,6 +60,73 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 	   $params				= $request->getParams();
 	   $helper->log('ipnAction()::start');
 
+		$GUID=$request['GUID'];
+		//url-ify the data for the POST
+		$fields_string="RequestGUID=".$GUID;
+		
+		
+		$url = trim($helper->getCentralprocessingUrl(),'/');
+		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
+		
+		
+		$wrapper = fopen('php://temp', 'r+');
+		
+		//open connection
+		$ch = curl_init($url);
+		
+		curl_setopt($ch, CURLOPT_VERBOSE, true);
+		curl_setopt($ch, CURLOPT_STDERR, $wrapper);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count(1));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		
+		//execute post
+		$result = curl_exec($ch);
+		if($result === false) {
+			echo 'Curl error: ' . curl_error($ch);
+		}
+		
+		
+		//close connection
+		curl_close($ch);
+		//var_dump($url);
+		//var_dump($fields_string);
+		
+		ob_start();
+		var_dump($result);
+		$log = ob_get_clean();
+		Mage::log($log,Zend_Log::NOTICE,"cc-ipn-result.txt");
+		//var_dump($result);
+		
+		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+		
+		$ResponseReturnCode = (string) $nodes->ResponseReturnCode;
+		$ResponseGUID = (string) $nodes->ResponseGUID;
+		$ApprovalCode = (string) $nodes->ApprovalCode;
+		$CreditCardType = (string) $nodes->CreditCardType;
+		$MaskedCreditCardNumber = (string) $nodes->MaskedCreditCardNumber;
+		$ApplicationStateData = $nodes->ApplicationStateData;
+		
+		$state = json_decode($ApplicationStateData);
+
+		$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+		//var_dump($order);
+		//var_dump($order->getId());
+		
+		$payment = $order->getPayment();
+
+		$payment->setCardType($CreditCardType);
+		$payment->setMaskedCcNumber($MaskedCreditCardNumber);
+		
+		$payment->setResponseGuid($ResponseGUID);
+		$payment->setResponseReturnCode($ResponseReturnCode);
+		$payment->setApprovalCode($ApprovalCode);
+		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+		$payment->save();
+/*
 	   //signature check...
 	   if($this->_validateResponse($params)){
 			$orderId = isset($params['req_reference_number']) ? $params['req_reference_number'] : null;
@@ -80,6 +147,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 				$helper->log('ipnAction()::invoice-created, main sent');
 			}
 		}
+		*/
     }
 
 	protected function _validateResponse($params) {
@@ -160,8 +228,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		
 		
 
-		$helper				= Mage::helper('centralprocessing');
-		$GUID=$_REQUEST['GUID'];
+		$helper	= Mage::helper('centralprocessing');
+		$GUID	= Mage::app()->getRequest()->getParam('GUID');//$_REQUEST['GUID'];
 		//url-ify the data for the POST
 		$fields_string="RequestGUID=".$GUID;
 		
@@ -199,7 +267,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		ob_start();
 		var_dump($result);
 		$log = ob_get_clean();
-		file_put_contents("result.txt", $log);
+		Mage::log($log,Zend_Log::NOTICE,"cc-result.txt");
 		//var_dump($result);
 		
 		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
