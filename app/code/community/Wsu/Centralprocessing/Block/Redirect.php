@@ -56,7 +56,8 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		//execute post
 		$result = curl_exec($ch);
 		if($result === false) {
-			echo 'Curl error: ' . curl_error($ch);
+			Mage::log('Curl error: ' . curl_error($ch),Zend_Log::ERR,"bad_cc_xml_responses.txt");
+			Mage::throwException('There seems to be something wrong with the output of the credit card server');
 		}
 		
 		
@@ -70,25 +71,28 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		$log = ob_get_clean();
 		Mage::log($log,Zend_Log::NOTICE,"redirect-result.txt");
 		
-		
-		/**/
-		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
-		//$code = $nodes->RequestReturnCode;  // put in just in case
-		$urlRedirect = (string) $nodes->WebPageURLAndGUID;
-		$guid = (string) $nodes->RequestGUID;
-		$state = json_decode($formFields['ApplicationStateData']);
-		$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
-		$payment = $order->getPayment();
-		$payment->setResponseGuid($guid);
-		$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
-		$payment->save();
-				
-
-		ob_start();
-		var_dump($urlRedirect);
-		$log = ob_get_clean();
-		Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
-		
+		if(strpos($result,'!DOCTYPE HTML')!==false){
+			Mage::log($result,Zend_Log::ERR,"bad_cc_xml_responses.txt");
+			Mage::throwException('There seems to be something wrong with the output of the credit card server');
+		}else{
+			/**/
+			$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+			//$code = $nodes->RequestReturnCode;  // put in just in case
+			$urlRedirect = (string) $nodes->WebPageURLAndGUID;
+			$guid = (string) $nodes->RequestGUID;
+			$state = json_decode($formFields['ApplicationStateData']);
+			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+			$payment = $order->getPayment();
+			$payment->setResponseGuid($guid);
+			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+			$payment->save();
+					
+	
+			ob_start();
+			var_dump($urlRedirect);
+			$log = ob_get_clean();
+			Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
+		}
 		
 		/**/
 		header("Location: ".$urlRedirect);
