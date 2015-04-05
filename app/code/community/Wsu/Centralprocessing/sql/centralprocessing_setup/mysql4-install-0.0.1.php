@@ -9,7 +9,7 @@ $installer->startSetup();
 
 $installer->run("
 
--- DROP TABLE IF EXISTS {$this->getTable('centralprocessing_api_debug')};
+DROP TABLE IF EXISTS {$this->getTable('centralprocessing_api_debug')};
 CREATE TABLE {$this->getTable('centralprocessing_api_debug')} (
   `id` int(11) unsigned NOT NULL auto_increment,
   `created_time` datetime NULL,
