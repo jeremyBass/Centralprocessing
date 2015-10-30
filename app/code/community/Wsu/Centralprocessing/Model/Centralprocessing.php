@@ -17,7 +17,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
     protected $_canVoid                 = false;
     protected $_canUseInternal          = false;
     protected $_canUseCheckout          = true;
-    protected $_canUseForMultishipping  = false;
+    protected $_canUseForMultishipping  = true;
 
 
     const CONFIG_CACHE_ID = 'wsu_centralprocessing_config';
