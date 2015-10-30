@@ -30,6 +30,18 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		$isAdminBlock = $this->getParentBlock() && $this->getParentBlock() instanceof Mage_Adminhtml_Block_Sales_Order_Payment;
 
 		$transData=array();
+		$BlockName = str_replace('.','_',$this->getNameInLayout());
+		$ControllerName = $this->getRequest()->getControllerName();
+		$ActionName = $this->getRequest()->getActionName();
+		$RouteName = $this->getRequest()->getRouteName();
+		$ModuleName = $this->getRequest()->getModuleName();
+		
+		$fullpath = $RouteName.'_'.$ControllerName.'_'.$ActionName;
+		//echo '<!--';
+		//var_dump($fullpath);
+		//echo '-<<-route/controll/action | block ->>-';
+		//var_dump($BlockName);
+		//echo '-->';
 		
 		if ($isAdminBlock) {
 			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
@@ -45,10 +57,13 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
 			$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
 		}
-		if (!$isAdminBlock && !$this->getIsPdf()) {
+		if (!$isAdminBlock && !$this->getIsPdf() && $fullpath!="checkout_multishipping_overview") {
 			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
 		}		
+		if($fullpath=="checkout_multishipping_overview"){
+			$transData[" "]="(You will be redirected to the payment page)";
+		}
 
         $transport->addData($transData);
 
