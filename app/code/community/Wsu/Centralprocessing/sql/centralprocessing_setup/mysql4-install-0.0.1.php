@@ -29,6 +29,7 @@ ALTER TABLE `{$quote}` ADD `approval_code` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$quote}` ADD `card_type` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$quote}` ADD `masked_cc_number` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$quote}` ADD `cc_mode` VARCHAR( 255 ) NOT NULL ;
+ALTER TABLE `{$quote}` ADD `other_multishipping_orders` VARCHAR( 255 ) NOT NULL ;
 
 ALTER TABLE `{$order}` ADD `response_return_code` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$order}` ADD `response_guid` VARCHAR( 255 ) NOT NULL ;
@@ -36,6 +37,7 @@ ALTER TABLE `{$order}` ADD `approval_code` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$order}` ADD `card_type` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$order}` ADD `masked_cc_number` VARCHAR( 255 ) NOT NULL ;
 ALTER TABLE `{$order}` ADD `cc_mode` VARCHAR( 255 ) NOT NULL ;
+ALTER TABLE `{$order}` ADD `other_multishipping_orders` VARCHAR( 255 ) NOT NULL ;
 ");
 
 
