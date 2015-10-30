@@ -79,7 +79,15 @@
                     <frontName>processing</frontName>
                 </args>
             </centralprocessing>
+			<checkout>
+				<args>
+					<modules>
+						<Wsu_Centralprocessing before="Mage_Checkout">Wsu_Centralprocessing</Wsu_Centralprocessing>
+					</modules>
+				</args>
+			</checkout>
         </routers>
+
         <!--<layout>
             <updates>
                 <centralprocessing>
