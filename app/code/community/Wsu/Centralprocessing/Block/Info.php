@@ -56,17 +56,12 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 			$transData[Mage::helper('payment')->__('GUID')]=$GUID.$GUIDinfo;
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
 			$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
-			
-			if(strpos($info->getOtherMultishippingOrders(),',')>0){
-				$transData[Mage::helper('payment')->__('Orders from multi-shippment')]=$info->getOtherMultishippingOrders();
-			}
+			$transData[Mage::helper('payment')->__('Orders from multi-shippment')]=$info->getOtherMultishippingOrders();
 		}
 		if (!$isAdminBlock && !$this->getIsPdf() && $fullpath!="checkout_multishipping_overview") {
 			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
-			if(strpos($info->getOtherMultishippingOrders(),',')>0){
-				$transData[Mage::helper('payment')->__('Orders from multi-shippment')]=$info->getOtherMultishippingOrders();
-			}
+			$transData[Mage::helper('payment')->__('Orders from multi-shippment')]=$info->getOtherMultishippingOrders();
 		}		
 		if($fullpath=="checkout_multishipping_overview"){
 			$transData[" "]="(You will be redirected to the payment page)";
