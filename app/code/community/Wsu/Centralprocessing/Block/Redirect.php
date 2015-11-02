@@ -14,7 +14,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	protected function _toHtml() {
 		$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
-		$helper				= Mage::helper('centralprocessing');
+		$helper		= Mage::helper('centralprocessing');
         $form 		= new Varien_Data_Form();
         $form->setAction($helper->getCentralprocessingUrl())
             ->setId('centralprocessing_payment_checkout')
