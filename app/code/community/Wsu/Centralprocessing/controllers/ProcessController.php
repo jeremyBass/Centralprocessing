@@ -31,7 +31,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
     }
 
 	public function redirectAction() {
-		$session 	= $this->_getCheckout();
+		//$session 	= $this->_getCheckout();
 		$order 		= $this->getOrder();
 		//var_dump($order); die();
 		if (!$order->getId()) {
