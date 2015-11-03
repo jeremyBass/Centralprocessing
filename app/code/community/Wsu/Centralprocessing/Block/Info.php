@@ -6,7 +6,7 @@
 class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
     protected function _construct() {
         parent::_construct();
-        //$this->setTemplate('wsu/centralprocessing/info.phtml');
+        $this->setTemplate('wsu/centralprocessing/payment/info/wsu_cc.phtml');
     }
 
     public function getMethodCode() {
