@@ -44,8 +44,8 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		//echo '-->';
 		
 		if ($isAdminBlock) {
-			$transData[Mage::helper('payment')->__('Card Type')]=$helper->getCardType($info->getCardType());
-			$transData[Mage::helper('payment')->__('Masked CC Number')]='############'.$info->getMaskedCcNumber();
+			$transData[Mage::helper('payment')->__('Card Type')] = $helper->getCardType($info->getCardType());
+			$transData[Mage::helper('payment')->__('Masked CC Number')] = sprintf('#### #### #### %d', $info->getMaskedCcNumber());
 			
 			
 			$GUID = $info->getResponseGuid();
