@@ -38,10 +38,17 @@
         <td>
 		<?php if($_label=="Orders from multi-shippment"): ?>
 			<?php 
-			$orders = explode(',',$_value);
-			foreach($orders as $order){
-				$_order = Mage::getModel('sales/order')->load($order, 'increment_id');
-   				$id = $_order->getId();
+			if(strpos($_value, ',')){
+				$orders = explode(',',$_value);
+				foreach($orders as $order){
+					$_order = Mage::getModel('sales/order')->load($order, 'increment_id');
+					$id = $_order->getId();
+					$url = Mage::helper("adminhtml")->getUrl("adminhtml/sales_order/view",array("order_id"=>$id));
+					echo "<a href='" . $url . "' target='_blank'>".$order."</a>, ";
+				}
+			}else{
+				$_order = Mage::getModel('sales/order')->load($_value, 'increment_id');
+				$id = $_order->getId();
 				$url = Mage::helper("adminhtml")->getUrl("adminhtml/sales_order/view",array("order_id"=>$id));
 				echo "<a href='" . $url . "' target='_blank'>".$order."</a>, ";
 			}
@@ -55,5 +62,4 @@
 <?php endforeach; ?>
 </table>
 <?php endif;?>
-
 <?php echo $this->getChildHtml()?>
