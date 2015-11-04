@@ -4,18 +4,30 @@
  * @package    Wsu_Centralprocessing
  */
 class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
+    /**
+     * Payment rendered specific information
+     *
+     * @var Varien_Object
+     */
+    protected $_paymentSpecificInformation = null;
+
     protected function _construct() {
         parent::_construct();
         $this->setTemplate('wsu/centralprocessing/payment/info/wsu_cc.phtml');
     }
-
-    public function getMethodCode() {
-        return $this->getInfo()->getMethodInstance()->getCode();
-    }
+    /**
+     * Render as PDF
+     * @return string
+     */
 	public function toPdf() {
 		$this->setIsPdf(true);
 		return parent::toPdf();
 	}	
+	
+ 	public function getMethodCode() {
+        return $this->getInfo()->getMethodInstance()->getCode();
+    }
+	
     protected function _prepareSpecificInformation($transport = null){
 		$helper				= Mage::helper('centralprocessing');
         if (!is_null($this->_paymentSpecificInformation)) {
@@ -70,7 +82,6 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 		if($fullpath=="checkout_multishipping_overview"){
 			$transData[" "]="(You will be redirected to the payment page)";
 		}
-
         $transport->addData($transData);
 
         return $transport;
