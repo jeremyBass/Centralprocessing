@@ -35,8 +35,8 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
     /**
      * Multishipping checkout after the overview page
      */
-    public function overviewPostAction()
-    {
+    public function overviewPostAction() {
+		Mage::getSingleton("customer/session")->setIsMultishippment(true);
 		$helper	= Mage::helper('centralprocessing');
         if (!$this->_validateFormKey()) {
             $this->_forward('backToAddresses');
@@ -83,20 +83,55 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
 
 			//$this->_getCheckout()->createOrders();
 			//try back
-				foreach ($shippingAddresses as $address) {
-					$order = $this->_prepareOrder($address);
-					$orders[] = $order;
-					Mage::dispatchEvent(
-						'checkout_type_multishipping_create_orders_single',
-						array('order'=>$order, 'address'=>$address)
-					);
-				}
-				
-				foreach ($orders as $order) {
-					$order->save();
-					$orderIds[$order->getId()] = $order->getIncrementId();
-				}
-	
+			foreach ($shippingAddresses as $address) {
+				$order = $this->_prepareOrder($address);
+				$orders[] = $order;
+				Mage::dispatchEvent(
+					'checkout_type_multishipping_create_orders_single',
+					array('order'=>$order, 'address'=>$address)
+				);
+			}
+			
+			foreach ($orders as $order) {
+				$order->save();
+				$orderIds[$order->getId()] = $order->getIncrementId();
+				// get totals and merge for redirect
+				// get an array of the items to send to redirect
+			}
+			//print_r('hello');
+			//var_dump($orders); die();
+			Mage::getSingleton("customer/session")->setMultishippmentOrders($orderIds);
+
+			$this->_redirect('*/*/redirect');
+			//push data to session
+			//exit
+    }
+	public function redirectAction() {
+		//$session 	= $this->_getCheckout();
+		//$order 		= $this->getOrder();
+		$orders = Mage::getSingleton("customer/session")->getMultishippmentOrders();
+		$_orders = array();
+		foreach($orders as $order_id=>$inc){
+			$_orders[] = Mage::getModel('sales/order')->load($inc,'increment_id');
+		}
+		foreach ($_orders as $order) {
+			$order->addStatusToHistory(
+				$order->getStatus(),
+				$this->__('Customer was redirected to Cybersource.')
+			);
+			$order->save();
+		}
+
+		$block = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrders($_orders);
+
+		//$this->getResponse()->setBody($block->toHtml());
+		$redict_page = $block->toHtml();
+		//var_dump($redict_page);die();
+		$this->getResponse()->setBody($redict_page);
+		//exit;
+    }
+	public function processRedirectReturn(){
+		//get data from session, and return data and start to process the orders and place them
 				foreach ($orders as $order) {
 					$order = Mage::getModel('sales/order')->load($order->getIncrementId(),'increment_id');
 					$_payment = $order->getPayment();
@@ -115,11 +150,6 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
 					$_payment->setApprovalCode($ApprovalCode);
 					$_payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 					
-					
-
-
-
-
 					$other_orders = $orderIds;
 					unset($other_orders[$order->getId()]);
 					$_others = implode(',',$other_orders);
@@ -133,7 +163,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
 						$order->queueNewOrderEmail();
 					}
 				}
-				
+				//
 				var_dump($orders);
 				die("orders");
 
@@ -147,7 +177,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
 	
 				Mage::dispatchEvent('checkout_submit_all_after', array('orders' => $orders, 'quote' => $this->getQuote()));
 	
-				return $this;
+				//return $this;
 				
 			try {
 				
@@ -167,7 +197,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
             $this->_getCheckout()->getCheckoutSession()->clear();
             $this->_getCheckout()->getCheckoutSession()->setDisplaySuccess(true);
             $this->_redirect('*/*/success');
-		 try {	
+		try {	
 			
         } catch (Mage_Payment_Model_Info_Exception $e) {
             $message = $e->getMessage();
@@ -194,13 +224,14 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
             $this->_getCheckoutSession()->addError($this->__('Order place error.'));
             $this->_redirect('*/*/billing');
         }
-    }
+		
+	}
+
 
     /**
      * Multishipping checkout success page
      */
-    public function successAction()
-    {
+    public function successAction() {
         if (!$this->_getState()->getCompleteStep(Mage_Checkout_Model_Type_Multishipping_State::STEP_OVERVIEW)) {
             $this->_redirect('*/*/addresses');
             return $this;

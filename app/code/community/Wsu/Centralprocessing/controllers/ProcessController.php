@@ -3,9 +3,26 @@
  * @category   Cybersource
  * @package    Wsu_Centralprocessing
  */
+
 class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front_Action {
     protected $_order;
-
+    /**
+     * Retrieve checkout state model
+     *
+     * @return Mage_Checkout_Model_Type_Multishipping_State
+     */
+    protected function _getMultishippingState() {
+        return Mage::getSingleton('checkout/type_multishipping_state');
+    }
+    /**
+     * Retrieve checkout model
+     *
+     * @return Mage_Checkout_Model_Type_Multishipping
+     */
+    protected function _getMultishippingCheckout() {
+        return Mage::getSingleton('checkout/type_multishipping');
+    }
+	
     protected function _getCheckout() {
         return Mage::getSingleton('checkout/session');
     }
@@ -292,7 +309,55 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		var_dump($ApplicationStateData);
 		*/
 		//var_dump($state);
+		//Mage::getSingleton("customer/session")->setIsMultishippment(true);
+		if(Mage::getSingleton("customer/session")->getIsMultishippment()){
+			if(strpos($state->roid,',')!==false){
+				$orderIds = array();
+				$orders = array();
+				$_orders = explode(',',$state->roid);
+				foreach($_orders as $item){
+					$order = Mage::getModel('sales/order')->load($item,'increment_id');
+					//var_dump($order);
+					//var_dump($order->getId());
+					$orderIds[]=$order->getId();
+					$payment = $order->getPayment();
+		
+					$payment->setCardType($CreditCardType);
+					$payment->setMaskedCcNumber($MaskedCreditCardNumber);
+					
+					$payment->setResponseGuid($ResponseGUID);
+					$payment->setResponseReturnCode($ResponseReturnCode);
+					$payment->setApprovalCode($ApprovalCode);
+					$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+					$payment->save();
+					$order->place();
+					$order->save();
+					$order->sendNewOrderEmail(); //already sent above
+					$orders[]=$order;
+					//var_dump($payment);
+				}
+			}
+			$quote = Mage::getSingleton('checkout/session')->getQuote();
+			Mage::getSingleton('core/session')->setOrderIds($orderIds);
+			Mage::getSingleton('checkout/session')->setLastQuoteId($quote->getId());
+	
+			$quote
+				->setIsActive(false)
+				->save();
 
+			Mage::dispatchEvent('checkout_submit_all_after', array('orders' => $orders, 'quote' => $quote));            
+            $this->_getMultishippingState()->setActiveStep(
+                Mage_Checkout_Model_Type_Multishipping_State::STEP_SUCCESS
+            );
+            $this->_getMultishippingState()->setCompleteStep(
+                Mage_Checkout_Model_Type_Multishipping_State::STEP_OVERVIEW
+            );
+            $this->_getMultishippingCheckout()->getCheckoutSession()->clear();
+            $this->_getMultishippingCheckout()->getCheckoutSession()->setDisplaySuccess(true);
+			
+			$this->_redirect('checkout/multishipping/success');
+			return;
+		}else{
 			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
 			//var_dump($order);
 			//var_dump($order->getId());
@@ -308,7 +373,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 			$payment->save();
 			$order->sendNewOrderEmail(); //already sent above
-			//var_dump($payment);
+		}
+
 			
 		$this->_redirect('checkout/onepage/success');
 		return;

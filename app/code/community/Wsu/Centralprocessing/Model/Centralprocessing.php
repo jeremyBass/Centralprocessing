@@ -175,181 +175,218 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		return $hashSign;
 	}
 
-	public function getFormFields() {
-		$payment			= $this->getQuote()->getPayment();
-		$order				= $this->getOrder();
-		$billingAddress		= $order->getBillingAddress();
-		$items				= $order->getAllItems();
-		
-		$formFields			= array();
-		$categories			= array();
-		$products			= array();
-		$stores				= array();
-		
-		foreach($items as $_item){
-			$productId = $_item->getProductId();
-			$product	 = Mage::getModel('catalog/product')->load($productId);
-			$cats		= $product->getCategoryIds();
-			foreach ($cats as $category_id) {
-				$_cat = Mage::getModel('catalog/category')->load($category_id) ;
-				$categories[] = $_cat->getName();
+	public function getFormFields($_isMultiShippment=false) {
+		if($_isMultiShippment){
+			$orders = Mage::getSingleton("customer/session")->getMultishippmentOrders();
+			$_orders = array();
+			foreach($orders as $order_id=>$inc){
+				$_orders[] = Mage::getModel('sales/order')->load($inc,'increment_id');
 			}
-			$products[] = $_item->getSku();
-			$stores[] = $_item->getStoreId(); 
+			$payment			= $_orders[0]->getPayment();
+			$formFields = $this->buildFormFields($this,$_orders,$payment);
+		}else{
+			$payment			= $this->getQuote()->getPayment();
+			$order				= $this->getOrder();
+			$formFields = $this->buildFormFields($this,$order,$payment);
 		}
-
-
-		
-
-
-
-		//prepare variables for hidden form fields
-		/*$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
-		$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
-		$formFields['transaction_uuid']		 = Mage::helper('core')->uniqHash();
-		$formFields['signed_field_names']	 = 'access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency,bill_to_address_city,bill_to_address_country,bill_to_address_line1,bill_to_address_line2,bill_to_address_postal_code,bill_to_address_state,bill_to_company_name,bill_to_email,bill_to_forename,bill_to_surname,bill_to_phone,customer_ip_address';
-
-		$formFields['signed_field_names']	 .= ',merchant_defined_data1,merchant_defined_data2,merchant_defined_data3,merchant_defined_data5,merchant_defined_data6,merchant_defined_data7,merchant_defined_data8,merchant_defined_data9,merchant_defined_data10,merchant_defined_data11,merchant_defined_data12,merchant_defined_data13,merchant_defined_data14,merchant_defined_data18,merchant_defined_data19,merchant_defined_data21,merchant_defined_data25';
-
-		$formFields['unsigned_field_names']	 = '';
-		$formFields['signed_date_time']		 = gmdate("Y-m-d\TH:i:s\Z", time() + 63*60);
-		$formFields['locale']				 = 'en';
-		$formFields['transaction_type']		 = 'sale';
-		$formFields['reference_number']		 = $order->getRealOrderId();
-		$formFields['amount']				 = $this->getOrderAmount();
-		$formFields['currency']				 = $this->getOrderCurrency();
-
-		
-		$formFields['bill_to_address_city']			 = $billingAddress->getCity();
-		$formFields['bill_to_address_country']		 = $billingAddress->getCountry();
-		$formFields['bill_to_address_line1']		 = $billingAddress->getStreet(1);
-		$formFields['bill_to_address_line2']		 = $billingAddress->getStreet(2);
-		$formFields['bill_to_address_postal_code']	 = $billingAddress->getPostcode();
-		$formFields['bill_to_address_state']		 = $billingAddress->getRegion();
-		$formFields['bill_to_company_name']			 = $billingAddress->getCompany();
-
-		$formFields['bill_to_email']				= $this->getEmail();
-		$formFields['bill_to_forename']				= $billingAddress->getFirstname();
-		$formFields['bill_to_surname']				= $billingAddress->getLastname();
-		$formFields['bill_to_phone']				= $billingAddress->getTelephone();
-		$formFields['customer_ip_address']			= Mage::helper('core/http')->getRemoteAddr();
-
-
-		$formFields['merchant_defined_data1']				= '10'; //Number of Failed Authorizations Attempts
-		$formFields['merchant_defined_data2']				= '10'; //Number of orders to date since registering
-		$formFields['merchant_defined_data3']				= 'Web'; //Sales channel
-		$formFields['merchant_defined_data5']				= date('d-m-Y h:i'); //last password change
-		$formFields['merchant_defined_data6']				= date('d-m-Y h:i'); //last email change
-		$formFields['merchant_defined_data7']				= 'NO'; //Guest account
-		$formFields['merchant_defined_data8']				= implode(',', array_unique($categories)); //Product Category
-		$formFields['merchant_defined_data9']				= implode(',', array_unique($products)); //
-		$formFields['merchant_defined_data10']				= $order->getShippingDescription(); //Shipping Method
-		$formFields['merchant_defined_data11']				= 'Home'; //Delivery Type
-		$formFields['merchant_defined_data12']				= 'NO'; //previous customer
-		$formFields['merchant_defined_data13']				= '100'; //Account Age
-		$formFields['merchant_defined_data14']				= date('d-m-Y h:i',(strtotime ( '-1 day' ) )); //Time since last purchase
-		$formFields['merchant_defined_data18']				= '1'; //Number of password change
-		$formFields['merchant_defined_data19']				= '0'; //Number of email change
-		$formFields['merchant_defined_data21']				= count($items); //Number of items sold in the order
-		$formFields['merchant_defined_data25']				= $order->getShippingAddress()->getCountry(); //Product Shipping Country Name
-
-
-		$formFields['signature']					= $this->getHashSign($formFields);
-*/
-		$state = '{
-			"oid":"'.$order->getId().'",
-			"roid":"'.$order->getRealOrderId().'",
-			"icount":"'.count($items).'",
-			"bEmail":"'. $this->getEmail() .'"
-		}';
-		/*
-			"icat":"'.implode(',', array_unique($categories)).'",
-			"isku":"'.implode(',', array_unique($products)).'",
-		*/
-		
-		$encodedState								= json_encode(json_decode(utf8_encode($state), true));
-
-		$formFields['state']						= $encodedState;
-
-		$formFields['MerchantID']					= $this->getConfigData('merchant_id');
-		$formFields['OneStepTranType']				= $this->getConfigData('tran_type');
-		$formFields['ApplicationIDPrimary']			= 'WSU-Magento--'.( (is_array($stores)?implode('-',array_unique($stores)):$stores) );//'{'.json_encode($stores).'}';
-		$formFields['ApplicationIDSecondary']		= $billingAddress->getFirstname().' '.$billingAddress->getLastname();
-		
-		$formFields['ApprovalCode']					= '';
-		$formFields['Approved_Transactions_Count']	= '';
-		
-		$formFields['AuthorizationAmount']			= $this->getOrderAmount();
-		$formFields['AuthorizationAttemptLimit']	= 3;
-		$formFields['AuthorizationType']			= $this->getConfigData('authorization_type');
-		
-		$formFields['BeginDateTime']				= '';
-		$formFields['EndDateTime']					= '';
-		
-		$formFields['BillingAddress']				= $billingAddress->getStreet(1).' '.$billingAddress->getStreet(2);
-		$formFields['BillingCity']					= $billingAddress->getCity();
-		$formFields['BillingZipCode']				= $billingAddress->getPostcode();
-		$formFields['BillingCountry']				= $billingAddress->getCountry();
-		
-		$region = Mage::getModel('directory/region')->load($billingAddress->getRegionId());
- 		$abbr = $region->getCode();
-		
-		$formFields['BillingState']					= $abbr;
-		
-		
-		$formFields['CaptureAmount']				= $this->getOrderAmount();
-		
-		$formFields['CPMReturnCode']				= '';
-		$formFields['CPMReturnMessage']				= '';
-		$formFields['CPMSequenceNum']				= '';
-		$formFields['CreditCardType']				= '';
-		$formFields['EmailAddressDeptContact']		= '';
-		$formFields['MaskedCreditCardNumber']		= '';
-		
-		
-		$formFields['profileSeqNum']				= '01';//$order->getRealOrderId();
-		
-		
-		$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
-		$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
-		//$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
-		
-		$formFields['StyleSheetKey']				= '';
-		$formFields['WebPageURLAndGUID']			= '';
-		
-		
-		$formFields['ApplicationStateData']			= $encodedState;
-
-/* 
-
-
-$formFields['ReturnCode']					= '';
-$formFields['ReturnMessage']				= '';
-$formFields['ResponseReturnCode']			= '';
-$formFields['ResponseReturnMessage']		= '';
-$formFields['RequestGUID']					= '';
-$formFields['Check_CPM_Return_Code']		= '';
-$formFields['Check_CPM_Return_Message']		= '';
-
-
-*/
-
-
-
-
-
-
-
-
-		/*//Log request info
-        if($this->getConfigData('debug_flag')){
-            Mage::helper('centralprocessing')->log($formFields);//for debug purpose
-            $resource       = Mage::getSingleton('core/resource');
-            $connection 	= $resource->getConnection('core_write');
-    	    $sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
-    	    $connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralprocessingUrl()."\n".print_r($formFields, 1), ''));
-        }*/
-//var_dump($formFields);
 		return $formFields;
 	}
+	
+	public function buildFormFields($ref,$order,$payment=null){
+
+			
+			$formFields			= array();
+			$categories			= array();
+			$products			= array();
+			$stores				= array();
+			$oids = array();
+			$roids = array();
+			$items = array();
+			$order_amount = 0;
+
+			if(is_array($order)){
+				foreach($order as $_order){
+					$oids[] = $_order->getId();
+					$roids[] = $_order->getRealOrderId();
+					foreach($_order->getAllItems() as $item){
+						$items[]=$item;
+					}
+					$order_amount = $order_amount+$_order->getGrandTotal();
+				}
+				$oid = implode(",",$oids);
+				$roid = implode(",",$roids);
+				$billingAddress		= $order[0]->getBillingAddress();
+			}else{
+				$order_amount = $ref->getOrderAmount();
+				$billingAddress		= $order->getBillingAddress();
+				$items				= $order->getAllItems();
+				$oid = $order->getId();
+				$roid =  $order->getRealOrderId();
+			}
+			
+			foreach($items as $_item){
+				$productId = $_item->getProductId();
+				$product	 = Mage::getModel('catalog/product')->load($productId);
+				$cats		= $product->getCategoryIds();
+				foreach ($cats as $category_id) {
+					$_cat = Mage::getModel('catalog/category')->load($category_id) ;
+					$categories[] = $_cat->getName();
+				}
+				$products[] = $_item->getSku();
+				$stores[] = $_item->getStoreId(); 
+			}
+	
+	
+			//prepare variables for hidden form fields
+			/*$formFields['access_key']			 = $this->getConfigData('access_key'); //'22b36766dde234e38adada8b3a6c7314';
+			$formFields['profile_id']			 = $this->getConfigData('profile_id'); //'LABISNI';
+			$formFields['transaction_uuid']		 = Mage::helper('core')->uniqHash();
+			$formFields['signed_field_names']	 = 'access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency,bill_to_address_city,bill_to_address_country,bill_to_address_line1,bill_to_address_line2,bill_to_address_postal_code,bill_to_address_state,bill_to_company_name,bill_to_email,bill_to_forename,bill_to_surname,bill_to_phone,customer_ip_address';
+	
+			$formFields['signed_field_names']	 .= ',merchant_defined_data1,merchant_defined_data2,merchant_defined_data3,merchant_defined_data5,merchant_defined_data6,merchant_defined_data7,merchant_defined_data8,merchant_defined_data9,merchant_defined_data10,merchant_defined_data11,merchant_defined_data12,merchant_defined_data13,merchant_defined_data14,merchant_defined_data18,merchant_defined_data19,merchant_defined_data21,merchant_defined_data25';
+	
+			$formFields['unsigned_field_names']	 = '';
+			$formFields['signed_date_time']		 = gmdate("Y-m-d\TH:i:s\Z", time() + 63*60);
+			$formFields['locale']				 = 'en';
+			$formFields['transaction_type']		 = 'sale';
+			$formFields['reference_number']		 = $order->getRealOrderId();
+			$formFields['amount']				 = $this->getOrderAmount();
+			$formFields['currency']				 = $this->getOrderCurrency();
+	
+			
+			$formFields['bill_to_address_city']			 = $billingAddress->getCity();
+			$formFields['bill_to_address_country']		 = $billingAddress->getCountry();
+			$formFields['bill_to_address_line1']		 = $billingAddress->getStreet(1);
+			$formFields['bill_to_address_line2']		 = $billingAddress->getStreet(2);
+			$formFields['bill_to_address_postal_code']	 = $billingAddress->getPostcode();
+			$formFields['bill_to_address_state']		 = $billingAddress->getRegion();
+			$formFields['bill_to_company_name']			 = $billingAddress->getCompany();
+	
+			$formFields['bill_to_email']				= $this->getEmail();
+			$formFields['bill_to_forename']				= $billingAddress->getFirstname();
+			$formFields['bill_to_surname']				= $billingAddress->getLastname();
+			$formFields['bill_to_phone']				= $billingAddress->getTelephone();
+			$formFields['customer_ip_address']			= Mage::helper('core/http')->getRemoteAddr();
+	
+	
+			$formFields['merchant_defined_data1']				= '10'; //Number of Failed Authorizations Attempts
+			$formFields['merchant_defined_data2']				= '10'; //Number of orders to date since registering
+			$formFields['merchant_defined_data3']				= 'Web'; //Sales channel
+			$formFields['merchant_defined_data5']				= date('d-m-Y h:i'); //last password change
+			$formFields['merchant_defined_data6']				= date('d-m-Y h:i'); //last email change
+			$formFields['merchant_defined_data7']				= 'NO'; //Guest account
+			$formFields['merchant_defined_data8']				= implode(',', array_unique($categories)); //Product Category
+			$formFields['merchant_defined_data9']				= implode(',', array_unique($products)); //
+			$formFields['merchant_defined_data10']				= $order->getShippingDescription(); //Shipping Method
+			$formFields['merchant_defined_data11']				= 'Home'; //Delivery Type
+			$formFields['merchant_defined_data12']				= 'NO'; //previous customer
+			$formFields['merchant_defined_data13']				= '100'; //Account Age
+			$formFields['merchant_defined_data14']				= date('d-m-Y h:i',(strtotime ( '-1 day' ) )); //Time since last purchase
+			$formFields['merchant_defined_data18']				= '1'; //Number of password change
+			$formFields['merchant_defined_data19']				= '0'; //Number of email change
+			$formFields['merchant_defined_data21']				= count($items); //Number of items sold in the order
+			$formFields['merchant_defined_data25']				= $order->getShippingAddress()->getCountry(); //Product Shipping Country Name
+	
+	
+			$formFields['signature']					= $this->getHashSign($formFields);
+	*/
+			$state = '{
+				"oid":"'.$oid.'",
+				"roid":"'.$roid.'",
+				"icount":"'.count($items).'",
+				"bEmail":"'. $this->getEmail() .'"
+			}';
+			/*
+				"icat":"'.implode(',', array_unique($categories)).'",
+				"isku":"'.implode(',', array_unique($products)).'",
+			*/
+			
+			$encodedState								= json_encode(json_decode(utf8_encode($state), true));
+	
+			$formFields['state']						= $encodedState;
+	
+			$formFields['MerchantID']					= $ref->getConfigData('merchant_id');
+			$formFields['OneStepTranType']				= $ref->getConfigData('tran_type');
+			$formFields['ApplicationIDPrimary']			= 'WSU-Magento--'.( (is_array($stores)?implode('-',array_unique($stores)):$stores) );//'{'.json_encode($stores).'}';
+			$formFields['ApplicationIDSecondary']		= $billingAddress->getFirstname().' '.$billingAddress->getLastname();
+			
+			$formFields['ApprovalCode']					= '';
+			$formFields['Approved_Transactions_Count']	= '';
+			
+			$formFields['AuthorizationAmount']			= $order_amount;
+			$formFields['AuthorizationAttemptLimit']	= 3;
+			$formFields['AuthorizationType']			= $ref->getConfigData('authorization_type');
+			
+			$formFields['BeginDateTime']				= '';
+			$formFields['EndDateTime']					= '';
+			
+			$formFields['BillingAddress']				= $billingAddress->getStreet(1).' '.$billingAddress->getStreet(2);
+			$formFields['BillingCity']					= $billingAddress->getCity();
+			$formFields['BillingZipCode']				= $billingAddress->getPostcode();
+			$formFields['BillingCountry']				= $billingAddress->getCountry();
+			
+			$region = Mage::getModel('directory/region')->load($billingAddress->getRegionId());
+			$abbr = $region->getCode();
+			
+			$formFields['BillingState']					= $abbr;
+			
+			
+			$formFields['CaptureAmount']				= $order_amount;
+			
+			$formFields['CPMReturnCode']				= '';
+			$formFields['CPMReturnMessage']				= '';
+			$formFields['CPMSequenceNum']				= '';
+			$formFields['CreditCardType']				= '';
+			$formFields['EmailAddressDeptContact']		= '';
+			$formFields['MaskedCreditCardNumber']		= '';
+			
+			
+			$formFields['profileSeqNum']				= '01';//$order->getRealOrderId();
+			
+			
+			$formFields['ReturnURL']					= Mage::helper('centralprocessing')->getReturnURL();
+			$formFields['PostbackURL']					= Mage::helper('centralprocessing')->getPostbackUrl();
+			//$formFields['CancelUrl']					= Mage::helper('centralprocessing')->getCancelUrl();
+			
+			$formFields['StyleSheetKey']				= '';
+			$formFields['WebPageURLAndGUID']			= '';
+			
+			
+			$formFields['ApplicationStateData']			= $encodedState;
+	
+	/* 
+	
+	
+	$formFields['ReturnCode']					= '';
+	$formFields['ReturnMessage']				= '';
+	$formFields['ResponseReturnCode']			= '';
+	$formFields['ResponseReturnMessage']		= '';
+	$formFields['RequestGUID']					= '';
+	$formFields['Check_CPM_Return_Code']		= '';
+	$formFields['Check_CPM_Return_Message']		= '';
+	
+	
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+			/*//Log request info
+			if($this->getConfigData('debug_flag')){
+				Mage::helper('centralprocessing')->log($formFields);//for debug purpose
+				$resource       = Mage::getSingleton('core/resource');
+				$connection 	= $resource->getConnection('core_write');
+				$sql            = "INSERT INTO ".$resource->getTableName('centralprocessing_api_debug')." SET created_time = ?, request_body = ?, response_body = ?";
+				$connection->query($sql, array(date('Y-m-d H:i:s'), Mage::helper('centralprocessing')->getCentralprocessingUrl()."\n".print_r($formFields, 1), ''));
+			}*/
+	//var_dump($formFields);	
+		return $formFields;	
+	}
+	
+	
+	
 }

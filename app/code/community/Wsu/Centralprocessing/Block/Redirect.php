@@ -13,18 +13,26 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 	
 	
 	protected function _toHtml() {
-		$standard 	= $this->getOrder()->getPayment()->getMethodInstance();
+		$orders = $this->getOrders();
+		$order = $this->getOrder();
+		if(!empty($order)){
+			$standard 	= $order->getPayment()->getMethodInstance();
+		}elseif(!empty($orders)){
+			$standard 	= $orders[0]->getPayment()->getMethodInstance();
+			$formFields = $standard->getFormFields(true);
+			Mage::register('multishippment_orders', $orders);
+		}
 		$helper		= Mage::helper('centralprocessing');
-        $form 		= new Varien_Data_Form();
-        $form->setAction($helper->getCentralprocessingUrl())
-            ->setId('centralprocessing_payment_checkout')
-            ->setName('centralprocessing_payment_checkout')
-            ->setMethod('POST')
-            ->setUseContainer(true);
-		$formFields = $standard->getFormFields();
+		$form 		= new Varien_Data_Form();
+		$form->setAction($helper->getCentralprocessingUrl())
+			->setId('centralprocessing_payment_checkout')
+			->setName('centralprocessing_payment_checkout')
+			->setMethod('POST')
+			->setUseContainer(true);
+
 		foreach ($formFields as $field => $value) {
-            $form->addField($field, 'hidden', array('name'=>$field, 'value'=>$value));
-        }
+			$form->addField($field, 'hidden', array('name'=>$field, 'value'=>$value));
+		}
 
 
 
@@ -81,11 +89,24 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 			$urlRedirect = (string) $nodes->WebPageURLAndGUID;
 			$guid = (string) $nodes->RequestGUID;
 			$state = json_decode($formFields['ApplicationStateData']);
-			$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
-			$payment = $order->getPayment();
-			$payment->setResponseGuid($guid);
-			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
-			$payment->save();
+			
+			if(strpos($state->roid,',')!==false){
+				$_orders = explode(',',$state->roid);
+				foreach($_orders as $item){
+					$_order = Mage::getModel('sales/order')->load($item,'increment_id');
+					$payment = $_order->getPayment();
+					$payment->setResponseGuid($guid);
+					$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+					$payment->save();
+				}
+			}else{
+				$order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+				$payment = $order->getPayment();
+				$payment->setResponseGuid($guid);
+				$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+				$payment->save();	
+			}
+
 					
 	
 			ob_start();
@@ -94,8 +115,11 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 			Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
 		}
 		
+
+		//die();
 		/**/
 		header("Location: ".$urlRedirect);
 		exit();
+
     }
 }
