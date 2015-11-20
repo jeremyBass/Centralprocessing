@@ -1,4 +1,0 @@
-Centralprocessing
-=================
-
-Central Processing gateway
