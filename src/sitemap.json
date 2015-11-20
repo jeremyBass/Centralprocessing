@@ -1,0 +1,9 @@
+ {
+	"globals":{
+		"repo":{
+			"name":"WSUMAGE-central-cc-processing",
+			"owner":"washingtonstateuniversity"
+		},
+		"google_analytics":"UA-XXXXXXXX-XX"
+	}
+}
