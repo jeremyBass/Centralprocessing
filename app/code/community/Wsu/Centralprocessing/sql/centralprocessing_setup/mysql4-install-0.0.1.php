@@ -47,6 +47,7 @@ checkForColumn($installer,$quote,'response_return_code','VARCHAR( 255 ) NOT NULL
 checkForColumn($installer,$quote,'response_guid','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$quote,'approval_code','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$quote,'card_type','VARCHAR( 255 ) NOT NULL');
+checkForColumn($installer,$quote,'auth_type','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$quote,'masked_cc_number','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$quote,'cc_mode','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$quote,'other_multishipping_orders','VARCHAR( 255 ) NOT NULL');
@@ -55,6 +56,7 @@ checkForColumn($installer,$order,'response_return_code','VARCHAR( 255 ) NOT NULL
 checkForColumn($installer,$order,'response_guid','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$order,'approval_code','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$order,'card_type','VARCHAR( 255 ) NOT NULL');
+checkForColumn($installer,$order,'auth_type','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$order,'masked_cc_number','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$order,'cc_mode','VARCHAR( 255 ) NOT NULL');
 checkForColumn($installer,$order,'other_multishipping_orders','VARCHAR( 255 ) NOT NULL');

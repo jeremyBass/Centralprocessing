@@ -67,6 +67,9 @@
 				<cc_mode>
 					<to_order_payment>*</to_order_payment>
 				</cc_mode>
+				<auth_type>
+					<to_order_payment>*</to_order_payment>
+				</auth_type>
 				<other_multishipping_orders>
 					<to_order_payment>*</to_order_payment>
 				</other_multishipping_orders>
