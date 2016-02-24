@@ -40,8 +40,9 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 
 		//url-ify the data for the POST
 		$fields_string="";
+		$auth_type = $helper->getAuthorizationType();
 		$url = trim($helper->getCentralprocessingUrl(),'/');
-		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapRequestWithAddress":"AuthRequestWithAddress");//AuthRequestWithCancelURL
+		$url .= DS.( "AUTHCAP" === $auth_type ? "AuthCapRequestWithAddress" : "AuthRequestWithAddress" );//AuthRequestWithCancelURL
 		
 		
 		foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
@@ -98,6 +99,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 					$payment = $_order->getPayment();
 					$payment->setResponseGuid($guid);
 					$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+					$payment->setAuthType($auth_type);
 					$payment->save();
 				}
 			}else{
@@ -105,6 +107,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 				$payment = $order->getPayment();
 				$payment->setResponseGuid($guid);
 				$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+				$payment->setAuthType($auth_type);
 				$payment->save();	
 			}
 

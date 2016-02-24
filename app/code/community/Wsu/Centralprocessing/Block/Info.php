@@ -62,12 +62,14 @@ class Wsu_Centralprocessing_Block_Info extends Mage_Payment_Block_Info {
 			
 			$GUID = $info->getResponseGuid();
 			$mode = $info->getCcMode();
+			$auth_type = $info->getAuthType();
 			$GUIDinfo="";//$helper->getResponseGuidInfo($GUID,($mode=="live"?1:0));
 	
 			$transData[Mage::helper('payment')->__('Response Return Code')]="".$info->getResponseReturnCode();
 			$transData[Mage::helper('payment')->__('GUID')]=$GUID.$GUIDinfo;
 			$transData[Mage::helper('payment')->__('Approval Code')]=$info->getApprovalCode();
 			$transData[Mage::helper('payment')->__('CC Mode')]=$mode;
+			$transData[Mage::helper('payment')->__('Auth Type')]=$auth_type;
 			if($info->getOtherMultishippingOrders()!=""){
 				$transData[Mage::helper('payment')->__('Orders from multi-shippment')]=$info->getOtherMultishippingOrders();
 			}
