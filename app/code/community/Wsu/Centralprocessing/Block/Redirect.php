@@ -17,6 +17,7 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		$order = $this->getOrder();
 		if(!empty($order)){
 			$standard 	= $order->getPayment()->getMethodInstance();
+			$formFields = $standard->getFormFields();
 		}elseif(!empty($orders)){
 			$standard 	= $orders[0]->getPayment()->getMethodInstance();
 			$formFields = $standard->getFormFields(true);
