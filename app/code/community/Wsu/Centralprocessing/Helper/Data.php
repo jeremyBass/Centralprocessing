@@ -246,7 +246,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $order->getPayment()->getMethodInstance()->getCode();
 	}
 	
-	public function _processOrderStatus($order)
+	public function _processOrderStatus($order,$auth_type)
 	{
 		$invoice = $order->prepareInvoice();
 	
@@ -257,7 +257,10 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 		   ->save();
 	
 		$invoice->sendEmail(true, '');
-		$invoice->setState(Mage_Sales_Model_Order_Invoice::STATE_PAID)->save();
+		if( "AUTHCAP" === $auth_type ){
+			// this should be an optional part and configurable
+			$invoice->setState(Mage_Sales_Model_Order_Invoice::STATE_PAID)->save();
+		}
 		$this->_changeOrderStatus($order);
 		return true;
 	}
