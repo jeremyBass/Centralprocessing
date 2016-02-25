@@ -334,7 +334,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 					$order->save();
 					$order->sendNewOrderEmail(); //already sent above
 					
-					if ( $order->canInvoice()){
+					if ( $order->canInvoice()){// this should be an optional part and configurable
 						$helper->_processOrderStatus($order,$payment->getAuthType());
 					}
 					$orders[]=$order;
@@ -376,7 +376,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			$payment->setApprovalCode($ApprovalCode);
 			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 			$payment->save();
-			if ( $order->canInvoice()){
+			if ( $order->canInvoice()){// this should be an optional part and configurable
 				$helper->_processOrderStatus($order,$payment->getAuthType());
 			}
 			$order->sendNewOrderEmail(); //already sent above
