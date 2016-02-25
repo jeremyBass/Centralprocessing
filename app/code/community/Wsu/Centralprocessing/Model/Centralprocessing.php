@@ -86,12 +86,90 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
         return true;
     }
 
-    public function capture(Varien_Object $payment, $amount) {
-        $payment->setStatus(self::STATUS_APPROVED)
+
+
+    /**
+     * Capture payment
+     *
+     * @param Varien_Object $payment
+     * @param float $amount
+     * @throws Exception
+     * @return void
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+         $payment->setStatus(self::STATUS_APPROVED)
             	->setLastTransId($this->getTransactionId());
 
         return $this;
     }
+
+
+    /**
+     * Send authorize request to gateway
+     *
+     * @param  Mage_Payment_Model_Info $payment
+     * @param  decimal $amount
+     * @return Mage_Paygate_Model_Authorizenet
+     */
+    /*public function authorize(Varien_Object $payment, $amount)
+    {
+        if ($amount <= 0) {
+            Mage::throwException(Mage::helper('paygate')->__('Invalid amount for authorization.'));
+        }
+
+        $this->_initCardsStorage($payment);
+
+        if ($this->isPartialAuthorization($payment)) {
+            $this->_partialAuthorization($payment, $amount, self::REQUEST_TYPE_AUTH_ONLY);
+            $payment->setSkipTransactionCreation(true);
+            return $this;
+        }
+
+        $this->_place($payment, $amount, self::REQUEST_TYPE_AUTH_ONLY);
+        $payment->setSkipTransactionCreation(true);
+        return $this;
+    }*/
+
+    /**
+     * Send capture request to gateway
+     *
+     * @param Mage_Payment_Model_Info $payment
+     * @param decimal $amount
+     * @return Mage_Paygate_Model_Authorizenet
+     */
+    /*public function capture(Varien_Object $payment, $amount)
+    {
+        if ($amount <= 0) {
+            Mage::throwException(Mage::helper('paygate')->__('Invalid amount for capture.'));
+        }
+        $this->_initCardsStorage($payment);
+        if ($this->_isPreauthorizeCapture($payment)) {
+            $this->_preauthorizeCapture($payment, $amount);
+        } else if ($this->isPartialAuthorization($payment)) {
+            $this->_partialAuthorization($payment, $amount, self::REQUEST_TYPE_AUTH_CAPTURE);
+        } else {
+            $this->_place($payment, $amount, self::REQUEST_TYPE_AUTH_CAPTURE);
+        }
+        $payment->setSkipTransactionCreation(true);
+        return $this;
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
