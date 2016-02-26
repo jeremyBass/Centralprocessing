@@ -168,11 +168,69 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	}
 
 
+	public function capturePreAuth($payment, $amount){
+		
+		
+		$helper = Mage::helper('centralprocessing');
+		$url = trim($helper->getCentralprocessingUrl(),'/');
+		$url .= DS.("CaptureRequest");
+		$tran_type = Mage::getStoreConfig('payment/centralprocessing/tran_type');
+		$GUID = $payment->getResponseGuid();
+		
+		var_dump($GUID);
+		var_dump($amount);
+		var_dump($tran_type);
+		
+		$formFields = array(
+			"RequestGUID"=>$GUID,
+			"CaptureAmount"=>$amount,
+			"OneStepTranType"=>$tran_type
+		);
+		
+		
+		
+		$fields_string="";
+		foreach($formFields as $key=>$value) {
+			 $fields_string .= $key.'='.$value.'&';
+		}
 
+		rtrim($fields_string, '&');
 
+		$wrapper = fopen('php://temp', 'r+');
+		
+		//open connection
+		$ch = curl_init($url);
+		
+		curl_setopt($ch, CURLOPT_VERBOSE, true);
+		curl_setopt($ch, CURLOPT_STDERR, $wrapper);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL, $url);
+		curl_setopt($ch,CURLOPT_POST, count($formFields));
+		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+		
+		//execute post
+		$result = curl_exec($ch);
+		if($result === false) {
+			Mage::log('Curl error: ' . curl_error($ch),Zend_Log::ERR,"bad_cc_xml_responses.txt");
+			Mage::throwException('There seems to be something wrong with the output of the credit card server');
+		}
+		
+		
+		//close connection
+		curl_close($ch);
 
-	
-	
+		ob_start();
+		var_dump($url);
+		var_dump($fields_string);
+		var_dump($result);
+		$log = ob_get_clean();
+		Mage::log($log,Zend_Log::NOTICE,"cap_proof.txt");
+		
+		//var_dump($log);
+		return $result;
+	}
 	
 	public function removeResponseXMLNS($input) {
 		// Remove XML response namespaces one by one 

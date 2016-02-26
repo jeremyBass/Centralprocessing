@@ -98,9 +98,30 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
      */
     public function capture(Varien_Object $payment, $amount)
     {
-         $payment->setStatus(self::STATUS_APPROVED)
-            	->setLastTransId($this->getTransactionId());
-
+		$helper = Mage::helper('centralprocessing');
+		$result = $helper->capturePreAuth($payment, $amount);
+		 
+		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+		
+		$ResponseReturnCode = (string) $nodes->ResponseReturnCode;
+		$ResponseReturnMessage = (string) $nodes->ResponseReturnMessage;
+		$CPMReturnCode = (string) $nodes->CPMReturnCode;
+		$CPMReturnMessage = (string) $nodes->CPMReturnMessage;
+		$ApprovalCode = (string) $nodes->ApprovalCode;
+		$CPMSequenceNum = (string) $nodes->CPMSequenceNum;
+		$CreditCardType = (string) $nodes->CreditCardType;
+		$MaskedCreditCardNumber = (string) $nodes->MaskedCreditCardNumber;
+		$ApplicationStateData = $nodes->ApplicationStateData;
+		$CaptureGUID = $nodes->CaptureGUID;
+		
+		
+		
+		$state = json_decode($ApplicationStateData);
+		if($ResponseReturnCode>0){
+			die('we are in the process of capturing a payment, hold for more');
+		}else{
+			$payment->setStatus(self::STATUS_APPROVED)->setLastTransId($this->getTransactionId());
+		}
         return $this;
     }
 
