@@ -9,10 +9,12 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract {
 		$helper		= Mage::helper('centralprocessing');
 		
 		$order = $this->getOrder();
+		if(empty($order)){
+			$order = $this->getOrders();
+		}
+		
 		if(!empty($order)){
-			$helper->order_obj = $order;
-		}elseif(!empty($orders)){
-			$orders = $this->getOrders();
+			$helper->order_obj = $order; 
 		}else{
 			Mage::throwException('Empty order');
 		}
