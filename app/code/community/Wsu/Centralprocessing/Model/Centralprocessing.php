@@ -118,7 +118,7 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
 		
 		$state = json_decode($ApplicationStateData);
 		if($ResponseReturnCode>0){
-			die('we are in the process of capturing a payment, hold for more');
+			Mage::throwException( 'CODE:'.$ResponseReturnCode.' => '.$ResponseReturnMessage );
 		}else{
 			$payment->setStatus(self::STATUS_APPROVED)->setLastTransId($this->getTransactionId());
 		}
