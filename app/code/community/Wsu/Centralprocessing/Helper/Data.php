@@ -62,7 +62,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function makeGatewayRequest(){
 		$helper		= Mage::helper('centralprocessing');
 		$order = $helper->order_obj;
-		if( !empty($order) && !is_array( empty($order) ) ){
+		if( !empty($order) && !is_array( $order ) ){
 			$standard 	= $order->getPayment()->getMethodInstance();
 			$formFields = $standard->getFormFields();
 		}elseif( !empty($order) ){
