@@ -74,7 +74,16 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
         }
         return $this;
     }
-
+	
+	public function canUseForMultishipping() {
+		/* note that there is a half way point that we could provide the option that you can capture
+		 * the multishipping invoices all at once, but that should be optional, and a confirmation
+		 * on the click of the capture (both server side, and JS is needed) a message should alert
+		 * the admin user that there will be a consolidation and each order will be settled at the same time
+		 */
+        return "AUTHCAP" === Mage::helper('centralprocessing')->getAuthorizationType();
+    }
+	
 	public function canUseForCurrency($currencyCode) {
 //        if (!in_array($currencyCode, $this->_allowCurrencyCode)) {
 //            return false;
@@ -86,12 +95,111 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
         return true;
     }
 
-    public function capture(Varien_Object $payment, $amount) {
-        $payment->setStatus(self::STATUS_APPROVED)
-            	->setLastTransId($this->getTransactionId());
 
+
+    /**
+     * Capture payment
+     *
+     * @param Varien_Object $payment
+     * @param float $amount
+     * @throws Exception
+     * @return void
+     */
+    public function capture(Varien_Object $payment, $amount)
+    {
+		$helper = Mage::helper('centralprocessing');
+		$result = $helper->capturePreAuth($payment, $amount);
+		 
+		$nodes = new SimpleXMLElement($helper->removeResponseXMLNS($result));
+		
+		$ResponseReturnCode = (string) $nodes->ResponseReturnCode;
+		$ResponseReturnMessage = (string) $nodes->ResponseReturnMessage;
+		$CPMReturnCode = (string) $nodes->CPMReturnCode;
+		$CPMReturnMessage = (string) $nodes->CPMReturnMessage;
+		$ApprovalCode = (string) $nodes->ApprovalCode;
+		$CPMSequenceNum = (string) $nodes->CPMSequenceNum;
+		$CreditCardType = (string) $nodes->CreditCardType;
+		$MaskedCreditCardNumber = (string) $nodes->MaskedCreditCardNumber;
+		$ApplicationStateData = $nodes->ApplicationStateData;
+		$CaptureGUID = $nodes->CaptureGUID;
+		
+		
+		
+		$state = json_decode($ApplicationStateData);
+		if($ResponseReturnCode>0){
+			Mage::throwException( 'CODE:'.$ResponseReturnCode.' => '.$ResponseReturnMessage );
+		}else{
+			$payment->setStatus(self::STATUS_APPROVED)->setLastTransId($this->getTransactionId());
+		}
         return $this;
     }
+
+
+    /**
+     * Send authorize request to gateway
+     *
+     * @param  Mage_Payment_Model_Info $payment
+     * @param  decimal $amount
+     * @return Mage_Paygate_Model_Authorizenet
+     */
+    /*public function authorize(Varien_Object $payment, $amount)
+    {
+        if ($amount <= 0) {
+            Mage::throwException(Mage::helper('paygate')->__('Invalid amount for authorization.'));
+        }
+
+        $this->_initCardsStorage($payment);
+
+        if ($this->isPartialAuthorization($payment)) {
+            $this->_partialAuthorization($payment, $amount, self::REQUEST_TYPE_AUTH_ONLY);
+            $payment->setSkipTransactionCreation(true);
+            return $this;
+        }
+
+        $this->_place($payment, $amount, self::REQUEST_TYPE_AUTH_ONLY);
+        $payment->setSkipTransactionCreation(true);
+        return $this;
+    }*/
+
+    /**
+     * Send capture request to gateway
+     *
+     * @param Mage_Payment_Model_Info $payment
+     * @param decimal $amount
+     * @return Mage_Paygate_Model_Authorizenet
+     */
+    /*public function capture(Varien_Object $payment, $amount)
+    {
+        if ($amount <= 0) {
+            Mage::throwException(Mage::helper('paygate')->__('Invalid amount for capture.'));
+        }
+        $this->_initCardsStorage($payment);
+        if ($this->_isPreauthorizeCapture($payment)) {
+            $this->_preauthorizeCapture($payment, $amount);
+        } else if ($this->isPartialAuthorization($payment)) {
+            $this->_partialAuthorization($payment, $amount, self::REQUEST_TYPE_AUTH_CAPTURE);
+        } else {
+            $this->_place($payment, $amount, self::REQUEST_TYPE_AUTH_CAPTURE);
+        }
+        $payment->setSkipTransactionCreation(true);
+        return $this;
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

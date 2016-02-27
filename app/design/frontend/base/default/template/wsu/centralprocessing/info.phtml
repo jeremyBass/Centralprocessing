@@ -1,4 +1,9 @@
 <?php
+	$helper=$this->helper('centralprocessing');
+	$auth_type = $helper->getAuthorizationType();
 	echo $this->getMethod()->getTitle() . '<br/>';
-	echo '<em>' . $this->helper('centralprocessing')->getInfo() . '</em>';
+	echo '<em>' . $helper->getInfo() . '</em>';
+	if( "AUTH" === $auth_type){
+		echo '<b><i> This will authorize you payment, and when it ships you will be invoices and payment will be captured at that time. </i></b>';
+	}
 ?>

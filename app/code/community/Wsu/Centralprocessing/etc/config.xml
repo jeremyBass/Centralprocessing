@@ -67,6 +67,9 @@
 				<cc_mode>
 					<to_order_payment>*</to_order_payment>
 				</cc_mode>
+				<auth_type>
+					<to_order_payment>*</to_order_payment>
+				</auth_type>
 				<other_multishipping_orders>
 					<to_order_payment>*</to_order_payment>
 				</other_multishipping_orders>
@@ -90,7 +93,16 @@
 				</args>
 			</checkout>
         </routers>
-
+		<events>
+			<core_block_abstract_to_html_after>
+				<observers>
+					<custom_to_html_before>
+						<class>centralprocessing/observer</class>
+						<method>checkMultishippingLinkVisiblity</method>
+					</custom_to_html_before>
+				</observers>
+			</core_block_abstract_to_html_after>
+		</events>
         <!--<layout>
             <updates>
                 <centralprocessing>

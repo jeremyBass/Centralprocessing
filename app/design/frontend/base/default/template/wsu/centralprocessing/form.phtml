@@ -1,7 +1,19 @@
+<?php
+	$helper=$this->helper('centralprocessing');
+	$auth_type = $helper->getAuthorizationType();
+?>
 <fieldset class="form-list">
     <ul id="payment_form_<?=$this->getMethodCode()?>" style="display:none">
         <li>
-            <?=$this->helper('centralprocessing')->getInfo()?>
+            <?=$helper->getInfo()?>
+			
+			<?php
+				if( "AUTH" === $auth_type){
+					echo '<br/><b><i> This will authorize your payment, and when the order ships you will be invoiced.  At that time your payment will be processed. </i></b>';
+				}
+			?>
+			
+			
         </li>
     </ul>
 </fieldset>

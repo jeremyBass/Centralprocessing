@@ -83,7 +83,7 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 		
 		
 		$url = trim($helper->getCentralprocessingUrl(),'/');
-		$url .= DS.($helper->getAuthorizationType()=="AUTHCAP"?"AuthCapResponse":"AuthCapResponse");		
+		$url .= DS.( "AUTHCAP" === $helper->getAuthorizationType() ? "AuthCapResponse" : "AuthCapResponse" );		
 		
 		
 		$wrapper = fopen('php://temp', 'r+');
@@ -333,6 +333,10 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 					$order->place();
 					$order->save();
 					$order->sendNewOrderEmail(); //already sent above
+					
+					if ( $order->canInvoice()){// this should be an optional part and configurable
+						$helper->_processOrderStatus($order,$payment->getAuthType());
+					}
 					$orders[]=$order;
 					//var_dump($payment);
 				}
@@ -372,6 +376,9 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
 			$payment->setApprovalCode($ApprovalCode);
 			$payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
 			$payment->save();
+			if ( $order->canInvoice()){// this should be an optional part and configurable
+				$helper->_processOrderStatus($order,$payment->getAuthType());
+			}
 			$order->sendNewOrderEmail(); //already sent above
 		}
 
