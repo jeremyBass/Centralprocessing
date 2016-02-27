@@ -74,7 +74,11 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
         }
         return $this;
     }
-
+	
+	public function canUseForMultishipping() {
+        return "AUTHCAP" === Mage::helper('centralprocessing')->getAuthorizationType();
+    }
+	
 	public function canUseForCurrency($currencyCode) {
 //        if (!in_array($currencyCode, $this->_allowCurrencyCode)) {
 //            return false;
