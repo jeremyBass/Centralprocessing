@@ -76,6 +76,11 @@ class Wsu_Centralprocessing_Model_Centralprocessing extends Mage_Payment_Model_M
     }
 	
 	public function canUseForMultishipping() {
+		/* note that there is a half way point that we could provide the option that you can capture
+		 * the multishipping invoices all at once, but that should be optional, and a confirmation
+		 * on the click of the capture (both server side, and JS is needed) a message should alert
+		 * the admin user that there will be a consolidation and each order will be settled at the same time
+		 */
         return "AUTHCAP" === Mage::helper('centralprocessing')->getAuthorizationType();
     }
 	
