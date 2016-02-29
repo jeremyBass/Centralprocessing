@@ -8,23 +8,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
 
     var $order_obj;
 
-	public function checkForColumn($installer,$table,$column,$def)
-	{
-		$resource = Mage::getSingleton('core/resource');
-		$readConnection = $resource->getConnection('core_read');
-		try{
-			$results = $readConnection->fetchAll("SHOW columns from `{$table}` where field='{$column}';");
-			if(count($results)>0){
-				return true;
-			}
-		} catch(Exception $e){ }
-		makeColumn($installer,$table,$column,$def);
-	}
-	public function makeColumn($installer,$table,$column,$def)
-	{
-		$installer->run("ALTER TABLE `{$table}` ADD `{$column}` {$def};");
-		var_dump("made $column");
-	}
+
     public function getConfig($field, $default = null)
     {
         $value = Mage::getStoreConfig('payment/centralprocessing/' . $field);
