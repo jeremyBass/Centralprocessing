@@ -3,23 +3,25 @@
  * @category   Cybersource
  * @package    Wsu_Centralprocessing
  */
- 
-function checkForColumn($installer,$table,$column,$def) {
-	$resource = Mage::getSingleton('core/resource');
-	$readConnection = $resource->getConnection('core_read');
-	try{
-		$results = $readConnection->fetchAll("SHOW columns from `{$table}` where field='{$column}';");	
-		if(count($results)>0){
-			return true;
-		}
-	} catch(Exception $e){ }
-	makeColumn($installer,$table,$column,$def);
+
+function checkForColumn($installer,$table,$column,$def)
+{
+    $resource = Mage::getSingleton('core/resource');
+    $readConnection = $resource->getConnection('core_read');
+    try{
+        $results = $readConnection->fetchAll("SHOW columns from `{$table}` where field='{$column}';");
+        if(count($results)>0){
+            return true;
+        }
+    } catch(Exception $e){ }
+    makeColumn($installer,$table,$column,$def);
 }
-function makeColumn($installer,$table,$column,$def) {
-	$installer->run("ALTER TABLE `{$table}` ADD `{$column}` {$def};");
-	var_dump("made $column");
+function makeColumn($installer,$table,$column,$def)
+{
+    $installer->run("ALTER TABLE `{$table}` ADD `{$column}` {$def};");
+    var_dump("made $column");
 }
- 
+
 $installer = $this;
 
 
