@@ -29,15 +29,17 @@
  *
  * @author      Magento Core Team <core@magentocommerce.com>
  */
-require_once(Mage::getModuleDir('controllers','Mage_Checkout').DS.'MultishippingController.php');
-class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_MultishippingController{//Mage_Checkout_Controller_Action {
+require_once(Mage::getModuleDir('controllers','Mage_Checkout').DS.'MultishippingController.php'); // check to remove this
+class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_MultishippingController
+{
 
     /**
      * Multishipping checkout after the overview page
      */
-    public function overviewPostAction() {
-		Mage::getSingleton("customer/session")->setIsMultishippment(true);
-		$helper	= Mage::helper('centralprocessing');
+    public function overviewPostAction()
+    {
+        Mage::getSingleton("customer/session")->setIsMultishippment(true);
+        $helper	= Mage::helper('centralprocessing');
         if (!$this->_validateFormKey()) {
             $this->_forward('backToAddresses');
             return;
@@ -56,85 +58,78 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
                     return;
                 }
             }
-			
-			$payment = $this->getRequest()->getPost('payment');
+
+            $payment = $this->getRequest()->getPost('payment');
             $paymentInstance = $this->_getCheckout()->getQuote()->getPayment();
-			if($paymentInstance->getMethod()!="centralprocessing"){
-				return parent::overviewPostAction();
-			}
-			
+            if($paymentInstance->getMethod()!="centralprocessing"){
+                return parent::overviewPostAction();
+            }
+
             if (isset($payment['cc_number'])) {
                 $paymentInstance->setCcNumber($payment['cc_number']);
             }
             if (isset($payment['cc_cid'])) {
                 $paymentInstance->setCcCid($payment['cc_cid']);
             }
-			
-			
-			$multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
-			$orderIds = array();
-			$this->_validate();
-			$shippingAddresses = $multishippingModel->getQuote()->getAllShippingAddresses();
-			$orders = array();
-	
-			if ($multishippingModel->getQuote()->hasVirtualItems()) {
-				$shippingAddresses[] = $multishippingModel->getQuote()->getBillingAddress();
-			}
 
-			//$this->_getCheckout()->createOrders();
-			//try back
-			foreach ($shippingAddresses as $address) {
-				$order = $this->_prepareOrder($address);
-				$orders[] = $order;
-				Mage::dispatchEvent(
-					'checkout_type_multishipping_create_orders_single',
-					array('order'=>$order, 'address'=>$address)
-				);
-			}
-			
-			foreach ($orders as $order) {
-				$order->save();
-				$orderIds[$order->getId()] = $order->getIncrementId();
-				// get totals and merge for redirect
-				// get an array of the items to send to redirect
-			}
-			//print_r('hello');
-			//var_dump($orders); die();
-			Mage::getSingleton("customer/session")->setMultishippmentOrders($orderIds);
 
-			$this->_redirect('*/*/redirect');
-			//push data to session
-			//exit
+            $multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
+            $orderIds = array();
+            $this->_validate();
+            $shippingAddresses = $multishippingModel->getQuote()->getAllShippingAddresses();
+            $orders = array();
+
+            if ($multishippingModel->getQuote()->hasVirtualItems()) {
+                $shippingAddresses[] = $multishippingModel->getQuote()->getBillingAddress();
+            }
+
+            foreach ($shippingAddresses as $address) {
+                $order = $this->_prepareOrder($address);
+                $orders[] = $order;
+                Mage::dispatchEvent(
+                    'checkout_type_multishipping_create_orders_single',
+                    array('order'=>$order, 'address'=>$address)
+                );
+            }
+
+            foreach ($orders as $order) {
+                $order->save();
+                $orderIds[$order->getId()] = $order->getIncrementId();
+                // get totals and merge for redirect
+                // get an array of the items to send to redirect
+            }
+
+            Mage::getSingleton("customer/session")->setMultishippmentOrders($orderIds);
+
+            $this->_redirect('*/*/redirect');
+
     }
-	public function redirectAction() {
-		//$session 	= $this->_getCheckout();
-		//$order 		= $this->getOrder();
-		$orders = Mage::getSingleton("customer/session")->getMultishippmentOrders();
-		$_orders = array();
-		foreach($orders as $order_id=>$inc){
-			$_orders[] = Mage::getModel('sales/order')->load($inc,'increment_id');
-		}
-		foreach ($_orders as $order) {
-			$order->addStatusToHistory(
-				$order->getStatus(),
-				$this->__('Customer was redirected to Cybersource.')
-			);
-			$order->save();
-		}
+    public function redirectAction()
+    {
+        $orders = Mage::getSingleton("customer/session")->getMultishippmentOrders();
+        $_orders = array();
+        foreach($orders as $order_id=>$inc){
+            $_orders[] = Mage::getModel('sales/order')->load($inc,'increment_id');
+        }
+        foreach ($_orders as $order) {
+            $order->addStatusToHistory(
+                $order->getStatus(),
+                $this->__('Customer was redirected to Cybersource.')
+            );
+            $order->save();
+        }
 
-		$block = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrders($_orders);
+        $block = $this->getLayout()->createBlock('centralprocessing/redirect')->setOrders($_orders);
 
-		//$this->getResponse()->setBody($block->toHtml());
-		$redict_page = $block->toHtml();
-		//var_dump($redict_page);die();
-		$this->getResponse()->setBody($redict_page);
-		//exit;
+        $redict_page = $block->toHtml();
+        $this->getResponse()->setBody($redict_page);
     }
 
     /**
      * Multishipping checkout success page
      */
-    public function successAction() {
+    public function successAction()
+    {
         if (!$this->_getState()->getCompleteStep(Mage_Checkout_Model_Type_Multishipping_State::STEP_OVERVIEW)) {
             $this->_redirect('*/*/addresses');
             return $this;
@@ -146,7 +141,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
         Mage::dispatchEvent('checkout_multishipping_controller_success_action', array('order_ids' => $ids));
         $this->renderLayout();
     }
-	
+
     /**
      * Validate quote data
      *
@@ -154,7 +149,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
      */
     protected function _validate()
     {
-		$multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
+        $multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
         $quote = $multishippingModel->getQuote();
         if (!$quote->getIsMultiShipping()) {
             Mage::throwException(Mage::helper('checkout')->__('Invalid checkout type.'));
@@ -184,8 +179,8 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
         }
         return $this;
     }
-	
-	
+
+
     /**
      * Prepare order based on quote address
      *
@@ -195,7 +190,7 @@ class Wsu_Centralprocessing_MultishippingController extends Mage_Checkout_Multis
      */
     protected function _prepareOrder(Mage_Sales_Model_Quote_Address $address)
     {
-		$multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
+        $multishippingModel = Mage::getModel('Mage_Checkout_Model_Type_Multishipping');
         $quote = $multishippingModel->getQuote();
         $quote->unsReservedOrderId();
         $quote->reserveOrderId();
