@@ -31,5 +31,23 @@ class Wsu_Centralprocessing_Model_Observer
             }
         }
     }
+	
+	/*
+	 *
+	 */
+	public function testModeNotice(){
+		$active = Mage::getStoreConfig('payment/centralprocessing/active');
+		if( 0 != $active){
+			$mode = Mage::getStoreConfig('payment/centralprocessing/mode');
+			if( 0 == $mode ){
+				if( null === Mage::registry('test_notice_set') ){
+					Mage::register('test_notice_set', true);
+					$helper		= Mage::helper('centralprocessing');
+					$message = "IMPORTANT:: the credit card gateway is in TEST MODE.  All trasactions are not real till it's on.";
+					Mage::getSingleton( ($helper->isAdmin()?'adminhtml':'core').'/session')->addNotice($message);
+				}
+			}
+		}
+	}
 
 }
