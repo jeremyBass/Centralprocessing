@@ -43,7 +43,7 @@ class Wsu_Centralprocessing_Model_Observer
 				if( null === Mage::registry('test_notice_set') ){
 					Mage::register('test_notice_set', true);
 					$helper		= Mage::helper('centralprocessing');
-					$message = "IMPORTANT:: the credit card gateway is in TEST MODE.  All trasactions are not real till it's on.";
+					$message = "IMPORTANT:: the credit card gateway is in TEST MODE.  All transactions are not real till it is out of the TEST MODE on.";
 					Mage::getSingleton( ($helper->isAdmin()?'adminhtml':'core').'/session')->addNotice($message);
 				}
 			}
