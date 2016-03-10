@@ -31,5 +31,26 @@ class Wsu_Centralprocessing_Model_Observer
             }
         }
     }
+	
+	/*
+	 *
+	 */
+	public function testModeNotice(){
+		$active = Mage::getStoreConfig('payment/centralprocessing/active');
+		if( 0 != $active){
+			$mode = Mage::getStoreConfig('payment/centralprocessing/mode');
+			if( 0 == $mode ){
+				if( null === Mage::registry('test_notice_set') ){
+					Mage::register('test_notice_set', true);
+					$helper		= Mage::helper('centralprocessing');
+					if( $helper->isAdmin() ){
+						Mage::getSingleton('adminhtml/session')->addNotice('admin Warning message');
+					}else{
+						Mage::getSingleton('core/session')->addNotice('front end Warning Message');
+					}
+				}
+			}
+		}
+	}
 
 }

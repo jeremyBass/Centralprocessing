@@ -26,7 +26,18 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
         }
         Mage::log($data, null, 'centralprocessing.log', true);
     }
+	public function isAdmin()
+    {
+        if(Mage::app()->getStore()->isAdmin()) {
+            return true;
+        }
 
+        if(Mage::getDesign()->getArea() == 'adminhtml')  {
+            return true;
+        }
+
+        return false;
+    }
     public function getResponseGuidInfo($GUID,$mode)
     {
         $html="";
