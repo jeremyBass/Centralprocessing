@@ -40,11 +40,19 @@ class Wsu_Centralprocessing_Model_Observer
 		if( 0 != $active){
 			$mode = Mage::getStoreConfig('payment/centralprocessing/mode');
 			if( 0 == $mode ){
-				if( null === Mage::registry('test_notice_set') ){
-					Mage::register('test_notice_set', true);
-					$helper		= Mage::helper('centralprocessing');
-					$message = "IMPORTANT:: the credit card gateway is in TEST MODE.  All transactions are not real till it is out of the TEST MODE on.";
-					Mage::getSingleton( ($helper->isAdmin()?'adminhtml':'core').'/session')->addNotice($message);
+				$message = "IMPORTANT:: the credit card gateway is in TEST MODE.  All transactions are not real till it is out of the TEST MODE on.";
+				
+				$helper		= Mage::helper('centralprocessing');
+				$messages = Mage::getSingleton( ($helper->isAdmin()?'adminhtml':'core').'/session' )->getMessages();
+				
+				$_hasMessage = false;
+				foreach ($messages->getItems() as $_message) {
+					if( $message == $_message->getCode() || 'testModeNotice' == $_message->getIdentifier()){
+						$_hasMessage = true;
+					}
+				}
+				if( !$_hasMessage ){
+					Mage::getSingleton( ($helper->isAdmin()?'adminhtml':'core').'/session')->addNotice($message);	
 				}
 			}
 		}
