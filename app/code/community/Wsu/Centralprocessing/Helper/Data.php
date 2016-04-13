@@ -169,7 +169,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
                 return $urlRedirect;
             }else{
                 $message = "Issues were found with information, ";
-                Mage::log($message . $nodes->RequestReturnMessage,Zend_Log::ERR,"bad_cc_xml_responses.txt");
+                Mage::log($message . (string) $nodes->RequestReturnMessage,Zend_Log::ERR,"bad_cc_xml_responses.txt");
                 Mage::throwException($message . $nodes->RequestReturnMessage,Zend_Log::ERR); //should be prettier not fault.
                 return false;
             }
