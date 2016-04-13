@@ -170,7 +170,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
             }else{
                 $message = "Issues were found with information, ".(string) $nodes->RequestReturnMessage;
                 Mage::log($message ,Zend_Log::ERR,"bad_cc_xml_responses.txt");
-                Mage::throwException($message ,Zend_Log::ERR); //should be prettier not fault.
+                //Mage::throwException($message ,Zend_Log::ERR); //should be prettier not fault.
                 return false;
             }
         }
