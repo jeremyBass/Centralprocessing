@@ -22,9 +22,11 @@ class Wsu_Centralprocessing_Block_Redirect extends Mage_Core_Block_Abstract
         }
 
         $urlRedirect = $helper->makeGatewayRequest();
-
-        header("Location: ".$urlRedirect);
-        exit();
-
+        if( false !== $urlRedirect ){
+            header("Location: ".$urlRedirect);
+            exit();
+        }else{
+            $this->_redirect('processing/process/cancel');
+        }
     }
 }
