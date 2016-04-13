@@ -142,32 +142,39 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
             $urlRedirect = (string) $nodes->WebPageURLAndGUID;
             $guid = (string) $nodes->RequestGUID;
             $state = json_decode($formFields['ApplicationStateData']);
-
-            if(strpos($state->roid,',')!==false){
-                $_orders = explode(',',$state->roid);
-                foreach($_orders as $item){
-                    $_order = Mage::getModel('sales/order')->load($item,'increment_id');
-                    $payment = $_order->getPayment();
+            if("" !== $guid){
+                if(false !== strpos($state->roid,',')){
+                    $_orders = explode(',',$state->roid);
+                    foreach($_orders as $item){
+                        $_order = Mage::getModel('sales/order')->load($item,'increment_id');
+                        $payment = $_order->getPayment();
+                        $payment->setResponseGuid($guid);
+                        $payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
+                        $payment->setAuthType($auth_type);
+                        $payment->save();
+                    }
+                }else{
+                    $order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
+                    $payment = $order->getPayment();
                     $payment->setResponseGuid($guid);
                     $payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
                     $payment->setAuthType($auth_type);
                     $payment->save();
                 }
+    
+                ob_start();
+                var_dump($urlRedirect);
+                $log = ob_get_clean();
+                Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
+                return $urlRedirect;
             }else{
-                $order = Mage::getModel('sales/order')->load($state->roid,'increment_id');
-                $payment = $order->getPayment();
-                $payment->setResponseGuid($guid);
-                $payment->setCcMode($helper->getConfig('mode')>0?"live":"test");
-                $payment->setAuthType($auth_type);
-                $payment->save();
+                $message = "Issues were found with information, ";
+                Mage::log($message . $nodes->RequestReturnMessage,Zend_Log::ERR,"bad_cc_xml_responses.txt");
+                Mage::throwException($message . $nodes->RequestReturnMessage,Zend_Log::ERR); //should be prettier not fault.
+                return false;
             }
-
-            ob_start();
-            var_dump($urlRedirect);
-            $log = ob_get_clean();
-            Mage::log($log,Zend_Log::NOTICE,"redirect.txt");
         }
-        return $urlRedirect;
+        return false;
     }
 
 
