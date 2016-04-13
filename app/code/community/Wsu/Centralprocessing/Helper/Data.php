@@ -99,7 +99,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
 
 
         $wrapper = fopen('php://temp', 'r+');
-
+        Mage::log('Curl target: ' . $url,Zend_Log::ERR,"cc_interactions.txt");
         //open connection
         $ch = curl_init($url);
 
@@ -118,6 +118,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
             Mage::log('Curl error: ' . curl_error($ch),Zend_Log::ERR,"bad_cc_xml_responses.txt");
             Mage::throwException('There seems to be something wrong with the output of the credit card server');
         }
+        Mage::log('Curl target sucess: ' . $url.'------------//',Zend_Log::ERR,"cc_interactions.txt");
 
 
         //close connection
