@@ -107,6 +107,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
         curl_setopt($ch, CURLOPT_STDERR, $wrapper);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         //set the url, number of POST vars, POST data
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_POST, count($formFields));
