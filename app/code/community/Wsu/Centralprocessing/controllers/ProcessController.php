@@ -106,6 +106,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
         curl_setopt($ch, CURLOPT_STDERR, $wrapper);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         //set the url, number of POST vars, POST data
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_POST, count(1));
@@ -274,6 +276,8 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
         curl_setopt($ch, CURLOPT_STDERR, $wrapper);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         //set the url, number of POST vars, POST data
         curl_setopt($ch,CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_POST, count(1));
