@@ -91,7 +91,7 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
         $fields_string="";
         $auth_type = $helper->getAuthorizationType();
         $url = trim($helper->getCentralprocessingUrl(),'/');
-        $url .= DS.( "AUTHCAP" === $auth_type ? "AuthCapRequestWithAddress" : "AuthRequestWithAddress" );//AuthRequestWithCancelURL
+        $url .= DS.( "AUTHCAP" === $auth_type ? "AuthCapRequestWithCancelURL" : "AuthRequestWithCancelURL" );//AuthCapRequestWithAddress//AuthRequestWithAddress
 
 
         foreach($formFields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
