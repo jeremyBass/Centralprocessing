@@ -112,14 +112,14 @@
 					</custom_to_html_before>
 				</observers>
 			</core_block_abstract_to_html_after>
-			<controller_action_predispatch>
+			<controller_action_predispatch_checkout_index_index>
 				<observers>
-					<networksecurities_testBlacklist>
+					<wsu_centralprocessing_testBlacklist>
 						<class>centralprocessing/observer</class>
 						<method>testModeNotice</method>
-					</networksecurities_testBlacklist>
+					</wsu_centralprocessing_testBlacklist>
 				</observers>
-			</controller_action_predispatch>
+			</controller_action_predispatch_checkout_index_index>
 		</events>
         <!--<layout>
             <updates>
