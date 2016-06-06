@@ -378,7 +378,10 @@ class Wsu_Centralprocessing_ProcessController extends Mage_Core_Controller_Front
             if ( $order->canInvoice()){// this should be an optional part and configurable
                 $helper->_processOrderStatus($order,$payment->getAuthType());
             }
-            $order->sendNewOrderEmail(); //already sent above
+            $canSendNewEmail = false;
+            if($canSendNewEmail){
+                $order->sendNewOrderEmail(); //already sent above
+            }
         }
 
 
