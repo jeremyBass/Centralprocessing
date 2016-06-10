@@ -329,7 +329,17 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
            ->addObject($invoice->getOrder())
            ->save();
 
-        $invoice->sendEmail(true, '');
+        
+        
+        
+        $send_invoice_email = true; //@todo 
+        if($send_invoice_email){
+            $invoice->sendEmail(true, '');
+        }
+        
+        $amountInvoiced = $order->getTotalInvoiced();
+        $order->setTotalPaid($amountInvoiced);
+        
         if( "AUTHCAP" === $auth_type ){
             // this should be an optional part and configurable
             $invoice->setState(Mage_Sales_Model_Order_Invoice::STATE_PAID)->save();
@@ -342,7 +352,8 @@ class Wsu_Centralprocessing_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $statusMessage = '';
         $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true);
-    $order->save();
+        
+        $order->save();
     }
 
 
