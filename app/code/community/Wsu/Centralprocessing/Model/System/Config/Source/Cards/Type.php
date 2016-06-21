@@ -10,6 +10,8 @@ class Wsu_Centralprocessing_Model_System_Config_Source_Cards_Type
         return array(
             '001'    => Mage::helper('centralprocessing')->__('Visa'),
             '002'    => Mage::helper('centralprocessing')->__('MasterCard'),
+            '003'    => Mage::helper('centralprocessing')->__('American Express'),
+            '004'    => Mage::helper('centralprocessing')->__('Discover Card'),
         );
     }
 }
